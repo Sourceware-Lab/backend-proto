@@ -8,7 +8,7 @@ import (
 // Define a home handler function which writes a byte slice containing
 // "Hello from RealQuick" as the response body.
 func home(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello from RealQuick"))
+	w.Write([]byte("Hello from RealQsdasuick something"))
 }
 
 func main() {
