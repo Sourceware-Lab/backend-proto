@@ -16,7 +16,7 @@ import (
 const apiVersion = "0.0.1"
 
 type Options struct {
-	Port int `help:"Port to listen on" short:"p" default:"8888"`
+	Port int `help:"Port to listen on" short:"p" default:8888`
 }
 
 // This is to make testing easier. We can pass a testing API interface.

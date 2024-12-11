@@ -4,6 +4,6 @@ services:
       context: .
       dockerfile: dev.Dockerfile
     ports:
-      - "4000:4000"
+      - "8888:8888"
     volumes:
       - .:/app
