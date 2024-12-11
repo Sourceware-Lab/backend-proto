@@ -18,14 +18,16 @@ type GreetingOutput struct {
 	}
 }
 
+type GreetingInput struct {
+	Name string `path:"name" maxLength:"30" example:"world" doc:"Name to greet"`
+}
+
 func main() {
 	// Create a new router & API
 	router := gin.New()
 	api := humagin.New(router, huma.DefaultConfig("My API", "1.0.0"))
 
-	huma.Get(api, "/greeting/{name}", func(ctx context.Context, input *struct {
-		Name string `path:"name" maxLength:"30" example:"world" doc:"Name to greet"`
-	}) (*GreetingOutput, error) {
+	huma.Get(api, "/greeting/{name}", func(ctx context.Context, input *GreetingInput) (*GreetingOutput, error) {
 		resp := &GreetingOutput{}
 		resp.Body.Message = fmt.Sprintf("Hello, %s!", input.Name)
 		return resp, nil
