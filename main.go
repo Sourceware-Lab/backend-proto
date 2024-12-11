@@ -30,5 +30,5 @@ func main() {
 		resp.Body.Message = fmt.Sprintf("Hello, %s!", input.Name)
 		return resp, nil
 	})
-	http.ListenAndServe("127.0.0.1:4000", router)
+	http.ListenAndServe("0.0.0.0:4000", router)
 }

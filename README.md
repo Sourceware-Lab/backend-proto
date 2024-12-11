@@ -1,3 +1,9 @@
-# backend-proto
+# Getting started
+## Local go
+* https://go.dev/doc/install
+* `go install github.com/air-verse/air@latest`
+* run `air`
 
-Need to add information with regards to how to run as well as relevant details
+## Local docker
+* https://docs.docker.com/compose/install/
+* run `make run`
