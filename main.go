@@ -1,24 +1,34 @@
 package main
 
 import (
-	"log"
+	"context"
+	"fmt"
 	"net/http"
+
+	"github.com/danielgtaylor/huma/v2"
+	"github.com/danielgtaylor/huma/v2/adapters/humagin"
+	_ "github.com/danielgtaylor/huma/v2/formats/cbor"
+	"github.com/gin-gonic/gin"
 )
 
-// Define a home handler function which writes a byte slice containing
-// "Hello from RealQuick" as the response body.
-func home(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello from RealQsdasuick something"))
+// GreetingOutput represents the greeting operation response.
+type GreetingOutput struct {
+	Body struct {
+		Message string `json:"message" example:"Hello, world!" doc:"Greeting message"`
+	}
 }
 
 func main() {
-	// Register handler function and corresponding route pattern with the servemux
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", home)
+	// Create a new router & API
+	router := gin.New()
+	api := humagin.New(router, huma.DefaultConfig("My API", "1.0.0"))
 
-	log.Print("starting server on :4000")
-
-	// check via: http://localhost:4000/
-	err := http.ListenAndServe(":4000", mux)
-	log.Fatal(err)
+	huma.Get(api, "/greeting/{name}", func(ctx context.Context, input *struct {
+		Name string `path:"name" maxLength:"30" example:"world" doc:"Name to greet"`
+	}) (*GreetingOutput, error) {
+		resp := &GreetingOutput{}
+		resp.Body.Message = fmt.Sprintf("Hello, %s!", input.Name)
+		return resp, nil
+	})
+	http.ListenAndServe("127.0.0.1:4000", router)
 }
