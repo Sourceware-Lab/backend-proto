@@ -12,11 +12,10 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 
-	"github.com/Sourceware-Lab/backend-proto/api/greeting"
-	"github.com/Sourceware-Lab/backend-proto/config"
 	ginLogger "github.com/gin-contrib/logger"
-	beApi "github.com/Sourceware-Lab/backend-proto/api"
 
+	beApi "github.com/Sourceware-Lab/backend-proto/api"
+	"github.com/Sourceware-Lab/backend-proto/config"
 )
 
 const apiVersion = "0.0.1"
@@ -27,34 +26,6 @@ type Options struct {
 
 func (o *Options) loadFromViper() {
 	o.Port = viper.GetInt(config.EnvVarPort)
-}
-
-// This is to make testing easier. We can pass a testing API interface.
-func addRoutes(api huma.API) {
-	log.Info().Msg("Starting loading routes")
-	// Register GET /greeting/{name}
-	huma.Register(api, huma.Operation{
-		OperationID: "get-greeting",
-		Method:      http.MethodGet,
-		Path:        "/greeting/{name}",
-		Summary:     "Get a greeting",
-		Description: "Get a greeting for a person by name.",
-		Tags:        []string{"Greetings"},
-	},
-		greeting.Get,
-	)
-
-	// Register POST /reviews
-	huma.Register(api, huma.Operation{
-		OperationID:   "post-greeting",
-		Method:        http.MethodPost,
-		Path:          "/greeting",
-		Summary:       "Post a greeting",
-		Tags:          []string{"Greetings"},
-		DefaultStatus: http.StatusCreated,
-	},
-		greeting.Post,
-	)
 }
 
 func getCli() (cli humacli.CLI) { // this -> (cli humacli.CLI) is a really cool go feature. It inits the var, and
