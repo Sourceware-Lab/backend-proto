@@ -23,6 +23,17 @@ func TestGetGreeting(t *testing.T) {
 	}
 }
 
+func TestGetGreetingMissingPath(t *testing.T) {
+	_, api := humatest.New(t)
+
+	addRoutes(api)
+
+	resp := api.Get("/greeting/")
+	if resp.Code != 404 {
+		t.Fatalf("Page found when it should not have: %s", resp.Body.String())
+	}
+}
+
 // Happy path test
 func TestPostGreeting(t *testing.T) {
 	_, api := humatest.New(t)
