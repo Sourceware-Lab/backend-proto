@@ -9,3 +9,9 @@ type Output struct {
 type Input struct {
 	Name string `path:"name" maxLength:"30" example:"world" doc:"Name to greet"`
 }
+
+type PostBodyInput struct {
+	Body struct {
+		Name string `path:"name" maxLength:"30" example:"world" doc:"Name to greet"`
+	}
+}

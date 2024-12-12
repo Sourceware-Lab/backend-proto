@@ -10,40 +10,13 @@ import (
 	"github.com/danielgtaylor/huma/v2/humacli"
 	"github.com/gin-gonic/gin"
 
-	"github.com/Sourceware-Lab/backend-proto/api/greeting"
+	beApi "github.com/Sourceware-Lab/backend-proto/api"
 )
 
 const apiVersion = "0.0.1"
 
 type Options struct {
 	Port int `help:"Port to listen on" short:"p" default:"8888"`
-}
-
-// This is to make testing easier. We can pass a testing API interface.
-func addRoutes(api huma.API) {
-	// Register GET /greeting/{name}
-	huma.Register(api, huma.Operation{
-		OperationID: "get-greeting",
-		Method:      http.MethodGet,
-		Path:        "/greeting/{name}",
-		Summary:     "Get a greeting",
-		Description: "Get a greeting for a person by name.",
-		Tags:        []string{"Greetings"},
-	},
-		greeting.Get,
-	)
-
-	// Register POST /reviews
-	huma.Register(api, huma.Operation{
-		OperationID:   "post-greeting",
-		Method:        http.MethodPost,
-		Path:          "/greeting",
-		Summary:       "Post a greeting",
-		Tags:          []string{"Greetings"},
-		DefaultStatus: http.StatusCreated,
-	},
-		greeting.Post,
-	)
 }
 
 func getCli() (cli humacli.CLI) { // this -> (cli humacli.CLI) is a really cool go feature. It inits the var, and
@@ -53,7 +26,7 @@ func getCli() (cli humacli.CLI) { // this -> (cli humacli.CLI) is a really cool 
 		router := gin.New()
 		api := humagin.New(router, huma.DefaultConfig("Example API", apiVersion))
 
-		addRoutes(api)
+		beApi.AddRoutes(api)
 
 		// Tell the CLI how to start your server.
 		hooks.OnStart(func() {
