@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"encoding/json"
@@ -15,7 +15,7 @@ import (
 func TestGetGreeting(t *testing.T) {
 	_, api := humatest.New(t)
 
-	addRoutes(api)
+	AddRoutes(api)
 
 	resp := api.Get("/greeting/world")
 	if !strings.Contains(resp.Body.String(), "Hello get, world!") {
@@ -26,7 +26,7 @@ func TestGetGreeting(t *testing.T) {
 func TestGetGreetingMissingPath(t *testing.T) {
 	_, api := humatest.New(t)
 
-	addRoutes(api)
+	AddRoutes(api)
 
 	resp := api.Get("/greeting/")
 	if resp.Code != 404 {
@@ -38,7 +38,7 @@ func TestGetGreetingMissingPath(t *testing.T) {
 func TestPostGreeting(t *testing.T) {
 	_, api := humatest.New(t)
 
-	addRoutes(api)
+	AddRoutes(api)
 
 	resp := api.Post("/greeting",
 		map[string]any{
@@ -53,7 +53,7 @@ func TestPostGreeting(t *testing.T) {
 func TestPostMissingBody(t *testing.T) {
 	_, api := humatest.New(t)
 
-	addRoutes(api)
+	AddRoutes(api)
 
 	resp := api.Post("/greeting",
 		map[string]any{
@@ -80,7 +80,7 @@ func FuzzPostGreeting(f *testing.F) {
 			}
 
 			_, api := humatest.New(t)
-			addRoutes(api)
+			AddRoutes(api)
 
 			// Go does some fun stuff with unicode in json marshal/unmarshal. It is easier to marshal and unmarshal the
 			// input data than handle the unicode correctly.
