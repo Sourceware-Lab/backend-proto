@@ -5,6 +5,7 @@ import (
 
 	"github.com/danielgtaylor/huma/v2"
 
+	dbexample "github.com/Sourceware-Lab/backend-proto/api/db_examples"
 	"github.com/Sourceware-Lab/backend-proto/api/greeting"
 )
 
@@ -32,5 +33,26 @@ func AddRoutes(api huma.API) {
 		DefaultStatus: http.StatusCreated,
 	},
 		greeting.Post,
+	)
+
+	//huma.Register(api, huma.Operation{
+	//	OperationID:   "post-dbexample_raw",
+	//	Method:        http.MethodPost,
+	//	Path:          "/db_example/raw",
+	//	Summary:       "Post to db with raw sql",
+	//	Tags:          []string{"db_example"},
+	//	DefaultStatus: http.StatusCreated,
+	//},
+	//	dbexample.PostRawSql,
+	//)
+	huma.Register(api, huma.Operation{
+		OperationID:   "post-dbexample_orm",
+		Method:        http.MethodPost,
+		Path:          "/db_example/orm",
+		Summary:       "Post to db with orm",
+		Tags:          []string{"db_example"},
+		DefaultStatus: http.StatusCreated,
+	},
+		dbexample.PostOrm,
 	)
 }

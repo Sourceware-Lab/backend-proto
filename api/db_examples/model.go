@@ -1,17 +1,17 @@
-package greeting
+package dbexample
 
-type Output struct {
+type PostOutputDbExample struct {
 	Body struct {
-		Message string `json:"message" example:"Hello, world!" doc:"Greeting message"`
+		ID string `json:"id" example:"999" doc:"Id for new user"`
 	}
 }
 
-type Input struct {
-	Name string `path:"name" maxLength:"30" example:"world" doc:"Name to greet"`
-}
-
-type PostBodyInput struct {
+type PostBodyInputDbExample struct {
 	Body struct {
-		Name string `path:"name" maxLength:"30" example:"world" doc:"Name to greet"`
+		Name         string  `path:"name" maxLength:"100" example:"Jo" doc:"Name for new user"`
+		Email        string  `path:"email" maxLength:"100" example:"jo@example.com" doc:"Email for new user"`
+		Age          uint8   `path:"age" example:"25" doc:"Age for new user"`
+		Birthday     *string `path:"birthday" example:"2006-01-02" doc:"Birthday for new user"`
+		MemberNumber *string `path:"member_number" example:"123456" doc:"Member number for new user"`
 	}
 }

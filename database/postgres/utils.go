@@ -1,4 +1,4 @@
-package config
+package DBpostgres
 
 import (
 	"time"
@@ -9,7 +9,9 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-func MakeDbConnection(dsn string) (db *gorm.DB) {
+var DB *gorm.DB
+
+func Open(dsn string) {
 	dbZlog := log.Logger
 	newLogger := logger.New(
 		&dbZlog, // io writer
@@ -25,5 +27,12 @@ func MakeDbConnection(dsn string) (db *gorm.DB) {
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error connecting to database")
 	}
-	return
+	DB = db
+}
+
+func RunMigrations() {
+	err := DB.AutoMigrate(&User{})
+	if err != nil {
+		log.Fatal().Err(err).Msg("Error migrating database")
+	}
 }

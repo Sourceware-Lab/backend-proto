@@ -8,14 +8,14 @@ import (
 	"github.com/danielgtaylor/huma/v2/adapters/humagin"
 	_ "github.com/danielgtaylor/huma/v2/formats/cbor"
 	"github.com/danielgtaylor/huma/v2/humacli"
+	ginLogger "github.com/gin-contrib/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 
-	ginLogger "github.com/gin-contrib/logger"
-
 	beApi "github.com/Sourceware-Lab/backend-proto/api"
 	"github.com/Sourceware-Lab/backend-proto/config"
+	DBpostgres "github.com/Sourceware-Lab/backend-proto/database/postgres"
 )
 
 const apiVersion = "0.0.1"
@@ -63,7 +63,8 @@ func getCli() (cli humacli.CLI) { // this -> (cli humacli.CLI) is a really cool 
 func main() {
 	config.LoadConfig()
 	config.InitLogger()
-	_ = config.MakeDbConnection(viper.GetString(config.EnvVarDatabaseDSN))
+	DBpostgres.Open(viper.GetString(config.EnvVarDatabaseDSN))
+	DBpostgres.RunMigrations()
 	cli := getCli()
 	cli.Run()
 }

@@ -1,16 +1,16 @@
 package greeting
 
-type Output struct {
+type OutputGreeting struct {
 	Body struct {
 		Message string `json:"message" example:"Hello, world!" doc:"Greeting message"`
 	}
 }
 
-type Input struct {
+type InputGreeting struct {
 	Name string `path:"name" maxLength:"30" example:"world" doc:"Name to greet"`
 }
 
-type PostBodyInput struct {
+type PostBodyInputGreeting struct {
 	Body struct {
 		Name string `path:"name" maxLength:"30" example:"world" doc:"Name to greet"`
 	}
