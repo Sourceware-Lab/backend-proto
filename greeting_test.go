@@ -11,6 +11,7 @@ import (
 	"github.com/Sourceware-Lab/backend-proto/api/greeting"
 )
 
+// Happy path test
 func TestGetGreeting(t *testing.T) {
 	_, api := humatest.New(t)
 
@@ -22,6 +23,7 @@ func TestGetGreeting(t *testing.T) {
 	}
 }
 
+// Happy path test
 func TestPostGreeting(t *testing.T) {
 	_, api := humatest.New(t)
 
@@ -83,7 +85,7 @@ func FuzzPostGreeting(f *testing.F) {
 			// api.Post() only accepts a io.Reader interface or map, not the raw string
 			resp := api.Post("/greeting", strings.NewReader(string(marshaledFuzzyInput)))
 
-			// Json unmarshal needs a map/struct to put the data, it does not return a new object.
+			// json unmarshal needs a map/struct to put the data, it does not return a new object.
 			var unmarshalledFuzzingInput greeting.PostBodyInput
 			var jsonData greeting.Output
 
