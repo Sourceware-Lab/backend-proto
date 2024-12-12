@@ -15,6 +15,5 @@ FROM build AS final
 
 COPY --from=build --chown=777 /app/backend /app/backend
 
-EXPOSE 4000:4000
 
 CMD ["./backend"]

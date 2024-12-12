@@ -1,4 +1,7 @@
 # Getting started
+* Copy the `example.env` file to `.env`
+* Set any required env var values
+
 ## Local go
 * https://go.dev/doc/install
 * `go install github.com/air-verse/air@latest`
