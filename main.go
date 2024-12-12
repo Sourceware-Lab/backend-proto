@@ -15,6 +15,8 @@ import (
 	"github.com/Sourceware-Lab/backend-proto/api/greeting"
 	"github.com/Sourceware-Lab/backend-proto/config"
 	ginLogger "github.com/gin-contrib/logger"
+	beApi "github.com/Sourceware-Lab/backend-proto/api"
+
 )
 
 const apiVersion = "0.0.1"
@@ -76,7 +78,7 @@ func getCli() (cli humacli.CLI) { // this -> (cli humacli.CLI) is a really cool 
 		router.Use(ginLogger.SetLogger())
 		api := humagin.New(router, huma.DefaultConfig("Example API", apiVersion))
 
-		addRoutes(api)
+		beApi.AddRoutes(api)
 
 		// Tell the CLI how to start your server.
 		hooks.OnStart(func() {
