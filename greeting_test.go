@@ -62,14 +62,23 @@ func FuzzPostGreeting(f *testing.F) {
 			}
 			_, api := humatest.New(t)
 			addRoutes(api)
-			resp := api.Post("/greeting",
+			jsonBody, err := json.Marshal(
 				map[string]any{
 					"name": name,
 				},
 			)
+			if err != nil {
+				t.Fatalf("Failed to marshal json: %s", err.Error())
+			}
+
+			resp := api.Post("/greeting", strings.NewReader(string(jsonBody)))
+			var unmarshaledBody greeting.PostBodyInput
 			var jsonData greeting.Output
+
+			json.Unmarshal(jsonBody, &unmarshaledBody.Body)
 			json.Unmarshal([]byte(resp.Body.String()), &jsonData.Body)
-			if jsonData.Body.Message != fmt.Sprintf("Hello post, %s!", name) {
+
+			if jsonData.Body.Message != fmt.Sprintf("Hello post, %s!", unmarshaledBody.Body.Name) {
 				t.Fatalf("Unexpected response: %s", resp.Body.String())
 			}
 		},
