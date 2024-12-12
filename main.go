@@ -63,6 +63,7 @@ func getCli() (cli humacli.CLI) { // this -> (cli humacli.CLI) is a really cool 
 func main() {
 	config.LoadConfig()
 	config.InitLogger()
+	_ = config.MakeDbConnection(viper.GetString(config.EnvVarDatabaseDSN))
 	cli := getCli()
 	cli.Run()
 }

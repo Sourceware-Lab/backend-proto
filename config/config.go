@@ -15,6 +15,7 @@ const (
 	EnvVarPort        = "PORT"
 	EnvVarProjectDir  = "PROJECT_DIR"
 	EnvVarReleaseMode = "RELEASE_MODE"
+	EnvVarDatabaseDSN = "DATABASE_DSN"
 	ProjectName       = "REPLACEME"
 )
 
@@ -46,6 +47,7 @@ func LoadConfig() {
 	viper.SetDefault(EnvVarPort, "8888")
 	viper.SetDefault(EnvVarProjectDir, homeDir)
 	viper.SetDefault(EnvVarReleaseMode, "false")
+	viper.SetDefault(EnvVarDatabaseDSN, "")
 
 	viper.SetConfigName(".env")
 	viper.SetConfigType("env")

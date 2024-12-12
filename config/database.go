@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-func dbConnect(dsn string) (db *gorm.DB) {
+func MakeDbConnection(dsn string) (db *gorm.DB) {
 	dbZlog := log.Logger
 	newLogger := logger.New(
 		&dbZlog, // io writer
