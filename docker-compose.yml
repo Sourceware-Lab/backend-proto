@@ -9,3 +9,7 @@ services:
       - .:/app
     env_file:
       - ./.env
+
+  postgres:
+    image: postgres:17
+
