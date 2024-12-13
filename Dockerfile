@@ -1,4 +1,4 @@
-FROM golang:1.23.4@sha256:574185e5c6b9d09873f455a7c205ea0514bfd99738c5dc7750196403a44ed4b7  AS base
+FROM golang:1.23.4-alpine@sha256:6c5c9590f169f77c8046e45c611d3b28fe477789acd8d3762d23d4744de69812 AS base
 
 ENV GOFLAGS="-buildvcs=false"
 
@@ -8,8 +8,7 @@ ARG USERNAME=nonroot
 ENV WORKDIR=/app
 
 
-RUN addgroup --gid $GID $USERNAME && \
-    adduser --uid $UID --gid $GID --disabled-password --gecos "" $USERNAME
+RUN addgroup -g "$GID" "$USERNAME" && adduser -u "$UID" -G "$USERNAME" -D -g "" "$USERNAME"
 
 WORKDIR $WORKDIR
 
@@ -17,17 +16,22 @@ RUN chown -R $USERNAME $WORKDIR
 
 USER $USERNAME
 
-FROM base AS local
+FROM base AS install
 
-RUN go install github.com/air-verse/air@latest
 COPY go.mod go.sum ./
 RUN go mod download
-COPY . .
 
+FROM install AS local
+
+RUN go install github.com/air-verse/air@latest
+
+FROM install AS build
+
+COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -o /app/backend
 
 FROM base AS production
 
-COPY --from=local --chown=777 /app/backend /app/backend
+COPY --from=build --chmod=100 /app/backend /app/backend
 
 CMD ["./backend"]
