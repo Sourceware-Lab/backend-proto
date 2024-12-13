@@ -2,7 +2,9 @@ services:
   backend:
     build:
       context: .
-      dockerfile: dev.Dockerfile
+      dockerfile: Dockerfile
+      target: local
+    command: ["air", "-c", ".air.toml"]
     ports:
       - "8888:8888"
     volumes:
