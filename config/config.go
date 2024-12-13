@@ -16,11 +16,22 @@ const (
 	EnvVarProjectDir  = "PROJECT_DIR"
 	EnvVarReleaseMode = "RELEASE_MODE"
 	EnvVarDatabaseDSN = "DATABASE_DSN"
-	ProjectName       = "REPLACEME"
 )
 
+const ProjectName = "REPLACEME"
+
+type config struct {
+	LogLevel    string `mapstructure:"LOG_LEVEL"`
+	Port        int    `mapstructure:"PORT"`
+	ProjectDir  string `mapstructure:"PROJECT_DIR"`
+	ReleaseMode bool   `mapstructure:"RELEASE_MODE"`
+	DatabaseDSN string `mapstructure:"DATABASE_DSN"`
+}
+
+var Config config
+
 func InitLogger() {
-	homeDir := viper.Get(EnvVarProjectDir)
+	homeDir := Config.ProjectDir
 	logDir := fmt.Sprintf("%s/%s/logs", homeDir, ProjectName)
 	err := os.MkdirAll(logDir, os.ModePerm)
 	if err != nil {
@@ -53,13 +64,18 @@ func LoadConfig() {
 	viper.SetConfigType("env")
 	viper.AddConfigPath(".")
 
-	viper.SetEnvPrefix(ProjectName + "_")
+	viper.SetEnvPrefix(ProjectName)
 
 	err = viper.ReadInConfig() // Find and read the config file
-	if err != nil {            // Handle errors reading the config file
+
+	if err != nil { // Handle errors reading the config file
 		log.Error().Err(err).Msg("No config file loaded")
 	} else {
 		log.Info().Msg(fmt.Sprintf("Using config file: %s", viper.ConfigFileUsed()))
 	}
 	viper.AutomaticEnv()
+	err = viper.Unmarshal(&Config)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Error unmarshalling config")
+	}
 }

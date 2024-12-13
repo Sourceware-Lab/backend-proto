@@ -11,7 +11,6 @@ import (
 	ginLogger "github.com/gin-contrib/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
-	"github.com/spf13/viper"
 
 	beApi "github.com/Sourceware-Lab/backend-proto/api"
 	"github.com/Sourceware-Lab/backend-proto/config"
@@ -25,7 +24,7 @@ type Options struct {
 }
 
 func (o *Options) loadFromViper() {
-	o.Port = viper.GetInt(config.EnvVarPort)
+	o.Port = config.Config.Port
 }
 
 func getCli() (cli humacli.CLI) { // this -> (cli humacli.CLI) is a really cool go feature. It inits the var, and
@@ -35,7 +34,7 @@ func getCli() (cli humacli.CLI) { // this -> (cli humacli.CLI) is a really cool 
 		log.Info().Msg("Starting server")
 		options.loadFromViper()
 
-		if viper.Get(config.EnvVarReleaseMode) == "true" {
+		if config.Config.ReleaseMode == true {
 			gin.SetMode(gin.ReleaseMode)
 		} else {
 			gin.SetMode(gin.DebugMode)
@@ -63,7 +62,7 @@ func getCli() (cli humacli.CLI) { // this -> (cli humacli.CLI) is a really cool 
 func main() {
 	config.LoadConfig()
 	config.InitLogger()
-	DBpostgres.Open(viper.GetString(config.EnvVarDatabaseDSN))
+	DBpostgres.Open(config.Config.DatabaseDSN)
 	DBpostgres.RunMigrations()
 	cli := getCli()
 	cli.Run()

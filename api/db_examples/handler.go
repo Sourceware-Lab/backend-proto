@@ -3,7 +3,10 @@ package dbexample
 import (
 	"context"
 	"database/sql"
+	"strconv"
 	"time"
+
+	"github.com/rs/zerolog/log"
 
 	DBpostgres "github.com/Sourceware-Lab/backend-proto/database/postgres"
 )
@@ -17,8 +20,12 @@ import (
 func PostOrm(ctx context.Context, input *PostBodyInputDbExample) (*PostOutputDbExample, error) {
 	resp := &PostOutputDbExample{}
 	user := DBpostgres.User{
-		Name: input.Body.Name,
-		Age:  input.Body.Age,
+		Name:         input.Body.Name,
+		Email:        nil,
+		Birthday:     nil,
+		MemberNumber: sql.NullString{},
+		ActivatedAt:  sql.NullTime{},
+		Age:          input.Body.Age,
 	}
 	if input.Body.Email != "" {
 		user.Email = &input.Body.Email
@@ -36,7 +43,11 @@ func PostOrm(ctx context.Context, input *PostBodyInputDbExample) (*PostOutputDbE
 			Valid:  true,
 		}
 	}
-	DBpostgres.DB.Create(user)
-	resp.Body.ID = "0"
+	result := DBpostgres.DB.Create(&user) // NOTE. This is a POINTER!
+	if result.Error != nil {
+		log.Error().Err(result.Error).Msg("Error creating user")
+		return nil, result.Error
+	}
+	resp.Body.ID = strconv.Itoa(int(user.ID))
 	return resp, nil
 }

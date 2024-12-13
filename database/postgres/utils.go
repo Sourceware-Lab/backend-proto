@@ -23,10 +23,23 @@ func Open(dsn string) {
 			Colorful:                  false,         // Disable color
 		},
 	)
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{Logger: newLogger})
+	retries := 3
+	retry := 0
+	var db *gorm.DB
+	var err error
+	for retry < retries {
+		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{Logger: newLogger})
+		if err == nil {
+			break
+		}
+		log.Info().Err(err).Msg("Error connecting to database, retrying in 3 seconds")
+		retry += 1
+		time.Sleep(3 * time.Second)
+	}
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error connecting to database")
 	}
+
 	DB = db
 }
 
