@@ -23,11 +23,17 @@ RUN go mod download
 
 FROM install AS local
 
+USER root
+RUN apk add --no-cache bash
+USER $USERNAME
+
 RUN go install github.com/air-verse/air@latest
+COPY . .
+
 
 FROM install AS build
-
 COPY . .
+
 RUN CGO_ENABLED=0 GOOS=linux go build -o /app/backend
 
 FROM base AS production

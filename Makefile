@@ -7,3 +7,10 @@ run: down
 run_local: down
 	docker compose run -d --remove-orphans -p 5432:5432 postgres
 	air
+
+test: down
+	docker compose -f ./docker-compose.yml -f ./test.docker-compose.yml up --remove-orphans --build
+
+test_no_docker:
+	go test -race ./...
+	cd api && go test -fuzztime 5s -fuzz FuzzPostGreeting
