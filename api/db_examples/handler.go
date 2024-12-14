@@ -37,8 +37,8 @@ func GetOrm(ctx context.Context, input *GetInputDbExample) (resp *GetOutputDbExa
 	return
 }
 
-func PostOrm(ctx context.Context, input *PostBodyInputDbExample) (*PostOutputDbExample, error) {
-	resp := &PostOutputDbExample{}
+func PostOrm(ctx context.Context, input *PostBodyInputDbExample) (resp *PostOutputDbExample, err error) {
+	resp = &PostOutputDbExample{}
 	user := DBpostgres.User{
 		Name:         input.Body.Name,
 		Email:        nil,
@@ -69,5 +69,5 @@ func PostOrm(ctx context.Context, input *PostBodyInputDbExample) (*PostOutputDbE
 		return nil, result.Error
 	}
 	resp.Body.ID = strconv.Itoa(int(user.ID))
-	return resp, nil
+	return
 }

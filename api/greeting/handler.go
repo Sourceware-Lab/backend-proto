@@ -5,14 +5,14 @@ import (
 	"fmt"
 )
 
-func Get(ctx context.Context, input *InputGreeting) (*OutputGreeting, error) {
-	resp := &OutputGreeting{}
+func Get(ctx context.Context, input *InputGreeting) (resp *OutputGreeting, err error) {
+	resp = &OutputGreeting{}
 	resp.Body.Message = fmt.Sprintf("Hello get, %s!", input.Name)
-	return resp, nil
+	return
 }
 
-func Post(ctx context.Context, input *PostBodyInputGreeting) (*OutputGreeting, error) {
-	resp := &OutputGreeting{}
+func Post(ctx context.Context, input *PostBodyInputGreeting) (resp *OutputGreeting, err error) {
+	resp = &OutputGreeting{}
 	resp.Body.Message = fmt.Sprintf("Hello post, %s!", input.Body.Name)
 	return resp, nil
 }
