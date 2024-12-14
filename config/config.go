@@ -3,6 +3,8 @@ package config
 import (
 	"fmt"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -26,6 +28,39 @@ type config struct {
 	ProjectDir  string `mapstructure:"PROJECT_DIR"`
 	ReleaseMode bool   `mapstructure:"RELEASE_MODE"`
 	DatabaseDSN string `mapstructure:"DATABASE_DSN"`
+}
+type DbDSN struct {
+	Host     string
+	Port     int
+	User     string
+	Password string
+	DbName   string
+	SSLMode  string
+	TimeZone string
+}
+
+func (d *DbDSN) ParseDSN(dsn string) DbDSN {
+	parts := make(map[string]string)
+	for _, part := range strings.Split(dsn, " ") {
+		kv := strings.SplitN(part, "=", 2)
+		if len(kv) == 2 {
+			parts[kv[0]] = kv[1]
+		}
+	}
+
+	d.Host = parts["host"]
+	d.Port, _ = strconv.Atoi(parts["port"])
+	d.User = parts["user"]
+	d.Password = parts["password"]
+	d.DbName = parts["dbname"]
+	d.SSLMode = parts["sslmode"]
+	d.TimeZone = parts["TimeZone"]
+
+	return *d
+}
+
+func (d *DbDSN) String() string {
+	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s", d.Host, d.User, d.Password, d.DbName, d.Port, d.SSLMode, d.TimeZone)
 }
 
 var Config config
