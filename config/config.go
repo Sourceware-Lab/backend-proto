@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -62,6 +63,14 @@ func (d *DbDSN) ParseDSN(dsn string) DbDSN {
 func (d *DbDSN) String() string {
 	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s", d.Host, d.User, d.Password, d.DbName, d.Port, d.SSLMode, d.TimeZone)
 }
+func getRootDir() string {
+	exPath, err := filepath.Abs(".")
+	if err != nil {
+		log.Fatal().Err(err).Msg("Error getting root dir")
+	}
+	log.Info().Msg(fmt.Sprintf("ROOT_DIR: %s", exPath))
+	return exPath
+}
 
 var Config config
 
@@ -93,7 +102,7 @@ func LoadConfig() {
 	viper.SetDefault(EnvVarPort, "8888")
 	viper.SetDefault(EnvVarProjectDir, homeDir)
 	viper.SetDefault(EnvVarReleaseMode, "false")
-	viper.SetDefault(EnvVarDatabaseDSN, "")
+	viper.SetDefault(EnvVarDatabaseDSN, "host=localhost user=postgres password=local_fake dbname=postgres port=5432 sslmode=disable TimeZone=GMT")
 
 	viper.SetConfigName(".env")
 	viper.SetConfigType("env")
