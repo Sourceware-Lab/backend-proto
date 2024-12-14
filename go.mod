@@ -6,6 +6,7 @@ require (
 	github.com/danielgtaylor/huma/v2 v2.27.0
 	github.com/gin-contrib/logger v1.2.2
 	github.com/gin-gonic/gin v1.10.0
+	github.com/google/go-cmp v0.6.0
 	github.com/google/uuid v1.6.0
 	github.com/rs/zerolog v1.33.0
 	github.com/spf13/viper v1.19.0

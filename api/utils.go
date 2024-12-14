@@ -55,4 +55,14 @@ func AddRoutes(api huma.API) {
 	},
 		dbexample.PostOrm,
 	)
+
+	huma.Register(api, huma.Operation{
+		OperationID: "get-dbexample_orm",
+		Method:      http.MethodGet,
+		Path:        "/db_example/orm/{id}",
+		Summary:     "Get to db with orm",
+		Tags:        []string{"db_example"},
+	},
+		dbexample.GetOrm,
+	)
 }

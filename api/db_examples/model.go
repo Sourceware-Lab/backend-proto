@@ -1,5 +1,12 @@
 package dbexample
 
+type GetInputDbExample struct {
+	ID string `path:"id" example:"999" doc:"Id for the user you want to get"`
+}
+type GetOutputDbExample struct {
+	PostBodyInputDbExample
+}
+
 type PostOutputDbExample struct {
 	Body struct {
 		ID string `json:"id" example:"999" doc:"Id for new user"`

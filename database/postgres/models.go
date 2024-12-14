@@ -8,8 +8,10 @@ import (
 )
 
 type User struct {
-	gorm.Model
-
+	ID        uint `gorm:"primarykey"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 	// Required
 	Name string // A regular string field
 	Age  uint8  // An unsigned 8-bit integer
