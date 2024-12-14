@@ -1,10 +1,31 @@
 package dbexample
 
+import (
+	"time"
+
+	DBpostgres "github.com/Sourceware-Lab/backend-proto/database/postgres"
+)
+
 type GetInputDbExample struct {
 	ID string `path:"id" example:"999" doc:"Id for the user you want to get"`
 }
 type GetOutputDbExample struct {
 	PostBodyInputDbExample
+}
+
+func (g *GetOutputDbExample) fromUserORM(user DBpostgres.User) *GetOutputDbExample {
+	var memberNumber *string
+
+	birthday := user.Birthday.Format(time.DateOnly)
+	if user.MemberNumber.Valid {
+		memberNumber = &user.MemberNumber.String
+	}
+	g.Body.Name = user.Name
+	g.Body.Age = user.Age
+	g.Body.Email = *user.Email
+	g.Body.Birthday = &birthday
+	g.Body.MemberNumber = memberNumber
+	return g
 }
 
 type PostOutputDbExample struct {

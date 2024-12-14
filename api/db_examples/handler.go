@@ -16,12 +16,11 @@ import (
 //		resp.Body.ID = "0"
 //		return resp, nil
 //	}
-func GetOrm(ctx context.Context, input *GetInputDbExample) (*GetOutputDbExample, error) {
-	resp := &GetOutputDbExample{}
+func GetOrm(ctx context.Context, input *GetInputDbExample) (resp *GetOutputDbExample, err error) {
+	resp = &GetOutputDbExample{}
 	user := DBpostgres.User{}
-	var err error
-	var id int
-	id, err = strconv.Atoi(input.ID)
+	id, err := strconv.Atoi(input.ID)
+
 	if err != nil {
 		log.Error().Err(err).Msg("Error parsing ID")
 		return nil, err
@@ -34,18 +33,10 @@ func GetOrm(ctx context.Context, input *GetInputDbExample) (*GetOutputDbExample,
 		log.Error().Err(result.Error).Msg("Error getting user")
 		return nil, result.Error
 	}
-	birthday := user.Birthday.Format(time.DateOnly)
-	var memberNumber *string
-	if user.MemberNumber.Valid {
-		memberNumber = &user.MemberNumber.String
-	}
-	resp.Body.Name = user.Name
-	resp.Body.Age = user.Age
-	resp.Body.Email = *user.Email
-	resp.Body.Birthday = &birthday
-	resp.Body.MemberNumber = memberNumber
-	return resp, nil
+	resp.fromUserORM(user)
+	return
 }
+
 func PostOrm(ctx context.Context, input *PostBodyInputDbExample) (*PostOutputDbExample, error) {
 	resp := &PostOutputDbExample{}
 	user := DBpostgres.User{
