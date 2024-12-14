@@ -13,4 +13,4 @@ test: down
 
 test_no_docker:
 	go test -race ./...
-	cd api && go test -fuzztime 5s -fuzz FuzzPostGreeting
+	./fuzz.sh

@@ -94,6 +94,10 @@ func InitLogger() {
 }
 
 func LoadConfig() {
+	err := os.Setenv("TZ", "GMT")
+	if err != nil {
+		log.Fatal().Err(err).Msg("Error setting timezone")
+	}
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error getting home dir")

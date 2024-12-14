@@ -74,7 +74,6 @@ func TestPostOrm(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to unmarshal response: %s", err.Error())
 	}
-	// TODO timezones are messing up
 	if !cmp.Equal(getRespBody.Body, postBody) {
 		t.Fatalf("Unexpected response: %s", getResp.Body.String())
 	}
