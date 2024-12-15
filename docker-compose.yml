@@ -2,10 +2,37 @@ services:
   backend:
     build:
       context: .
-      dockerfile: dev.Dockerfile
+      dockerfile: Dockerfile
+      target: local
+    command: ["air", "-c", ".air.toml"]
     ports:
       - "8888:8888"
     volumes:
       - .:/app
     env_file:
       - ./.env
+    environment:
+      - REPLACEME_DATABASE_DSN=host=postgres user=postgres password=local_fake dbname=postgres port=5432 sslmode=disable TimeZone=GMT
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:17-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: local_fake
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+#      - ./seeds:/seeds
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+
+volumes:
+  postgres-data:

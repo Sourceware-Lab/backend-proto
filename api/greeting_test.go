@@ -97,8 +97,8 @@ func FuzzPostGreeting(f *testing.F) {
 			resp := api.Post("/greeting", strings.NewReader(string(marshaledFuzzyInput)))
 
 			// json unmarshal needs a map/struct to put the data, it does not return a new object.
-			var unmarshalledFuzzingInput greeting.PostBodyInput
-			var jsonData greeting.Output
+			var unmarshalledFuzzingInput greeting.PostInputGreeting
+			var jsonData greeting.OutputGreeting
 
 			err = json.Unmarshal(marshaledFuzzyInput, &unmarshalledFuzzingInput.Body)
 			if err != nil {

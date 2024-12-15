@@ -1,4 +1,5 @@
 # Getting started
+* Find and replace `REPLACEME` with the name of your project
 * Copy the `example.env` file to `.env`
 * Set any required env var values
 

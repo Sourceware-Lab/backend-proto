@@ -5,12 +5,12 @@ import (
 
 	"github.com/danielgtaylor/huma/v2"
 
+	dbexample "github.com/Sourceware-Lab/backend-proto/api/db_examples"
 	"github.com/Sourceware-Lab/backend-proto/api/greeting"
 )
 
 // AddRoutes This is to make testing easier. We can pass a testing API interface.
 func AddRoutes(api huma.API) {
-	// Register GET /greeting/{name}
 	huma.Register(api, huma.Operation{
 		OperationID: "get-greeting",
 		Method:      http.MethodGet,
@@ -22,7 +22,6 @@ func AddRoutes(api huma.API) {
 		greeting.Get,
 	)
 
-	// Register POST /reviews
 	huma.Register(api, huma.Operation{
 		OperationID:   "post-greeting",
 		Method:        http.MethodPost,
@@ -33,4 +32,45 @@ func AddRoutes(api huma.API) {
 	},
 		greeting.Post,
 	)
+
+	huma.Register(api, huma.Operation{
+		OperationID: "get-dbexample_orm",
+		Method:      http.MethodGet,
+		Path:        "/db_example/orm/{id}",
+		Summary:     "Get to db with orm",
+		Tags:        []string{"db_example"},
+	},
+		dbexample.GetOrm,
+	)
+	huma.Register(api, huma.Operation{
+		OperationID: "get-dbexample_raw_sql",
+		Method:      http.MethodGet,
+		Path:        "/db_example/raw_sql/{id}",
+		Summary:     "Get to db with raw_sql",
+		Tags:        []string{"db_example"},
+	},
+		dbexample.GetRawSql,
+	)
+
+	huma.Register(api, huma.Operation{
+		OperationID:   "post-dbexample_orm",
+		Method:        http.MethodPost,
+		Path:          "/db_example/orm",
+		Summary:       "Post to db with orm",
+		Tags:          []string{"db_example"},
+		DefaultStatus: http.StatusCreated,
+	},
+		dbexample.PostOrm,
+	)
+	huma.Register(api, huma.Operation{
+		OperationID:   "post-dbexample_raw_sql",
+		Method:        http.MethodPost,
+		Path:          "/db_example/raw_sql",
+		Summary:       "Post to db with raw sql",
+		Tags:          []string{"db_example"},
+		DefaultStatus: http.StatusCreated,
+	},
+		dbexample.PostRawSql,
+	)
+
 }

@@ -22,4 +22,4 @@ jobs:
         run: go test -race ./...
 
       - name: Run Fuzzy tests
-        run: go test -fuzztime 5s -fuzz FuzzPostGreeting
+        run: cd api && go test -fuzztime 5s -fuzz FuzzPostGreeting
