@@ -46,6 +46,7 @@ func teardown(dbName string) {
 //nolint:funlen
 func TestRoutes(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name     string
 		basePath string
@@ -83,8 +84,10 @@ func TestRoutes(t *testing.T) {
 		func() {
 			dbName := setup()
 			defer teardown(dbName)
+
 			_, apiInstance := humatest.New(t)
 			api.AddRoutes(apiInstance)
+
 			birthdayTime := time.Now().Add(time.Duration(-tt.want.Body.Age) * time.Hour * 24 * 365)
 			birthday := birthdayTime.Format(time.DateOnly)
 			tt.want.Body.Birthday = &birthday
@@ -96,12 +99,14 @@ func TestRoutes(t *testing.T) {
 
 			postRespBody := dbexample.PostOutputDBExample{}.Body
 			err := json.Unmarshal(resp.Body.Bytes(), &postRespBody)
+
 			if err != nil {
 				t.Fatalf("Failed to unmarshal response: %s", err.Error())
 			}
 
 			expectedPostBody := dbexample.PostOutputDBExample{}.Body
 			expectedPostBody.ID = "1"
+
 			if !cmp.Equal(postRespBody, expectedPostBody) {
 				t.Fatalf("Unexpected response: %s", resp.Body.String())
 			}
@@ -109,6 +114,7 @@ func TestRoutes(t *testing.T) {
 			getResp := apiInstance.Get(tt.basePath + "/1")
 			getRespBody := dbexample.GetOutputDBExample{}
 			err = json.Unmarshal(getResp.Body.Bytes(), &getRespBody)
+
 			if err != nil {
 				t.Fatalf("Failed to unmarshal response: %s", err.Error())
 			}

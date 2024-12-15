@@ -77,6 +77,7 @@ func PostRawSQL(_ context.Context, input *PostInputDBExample) (*PostOutputDBExam
 func GetOrm(_ context.Context, input *GetInputDBExample) (*GetOutputDBExample, error) {
 	resp := &GetOutputDBExample{}
 	id, err := strconv.Atoi(input.ID)
+
 	if err != nil {
 		log.Error().Err(err).Msg("Error parsing ID")
 
