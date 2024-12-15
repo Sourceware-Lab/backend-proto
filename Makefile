@@ -11,6 +11,10 @@ run_local: down
 test: down
 	docker compose -f ./docker-compose.yml -f ./test.docker-compose.yml up --remove-orphans --build
 
+prod: down
+	docker compose -f ./docker-compose.yml -f ./prod.docker-compose.yml up --remove-orphans --build
+
+
 test_no_docker:
 	go test -race ./...
 	./fuzz.sh

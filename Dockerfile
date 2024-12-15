@@ -36,8 +36,9 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /app/backend
 
-FROM base AS production
+# docker pull gcr.io/distroless/static-debian12:nonroot
+FROM gcr.io/distroless/static-debian12@sha256:6cd937e9155bdfd805d1b94e037f9d6a899603306030936a3b11680af0c2ed58 AS production
 
-COPY --from=build --chmod=100 /app/backend /app/backend
+COPY --from=build /app/backend /backend
 
-CMD ["./backend"]
+ENTRYPOINT ["/backend"]
