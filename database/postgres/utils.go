@@ -15,11 +15,11 @@ var DB *gorm.DB //nolint:gochecknoglobals
 
 func Open(dsn string) {
 	if DB != nil {
-		openDb, err := DB.DB()
+		openDB, err := DB.DB()
 		if err != nil {
 			log.Fatal().Err(err).Msg("Error getting DB")
 		}
-		err = openDb.Close()
+		err = openDB.Close()
 		if err != nil {
 			log.Fatal().Err(err).Msg("Error closing DB")
 		}
@@ -65,25 +65,25 @@ func Open(dsn string) {
 }
 
 func Close() {
-	openDb, err := DB.DB()
+	openDB, err := DB.DB()
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error getting DB")
 	}
-	err = openDb.Close()
+	err = openDB.Close()
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error closing DB")
 	}
 	DB = nil
 }
 
-func CreateDb(dbName string) {
+func CreateDB(dbName string) {
 	result := DB.Exec("CREATE DATABASE " + dbName)
 	if result.Error != nil {
 		log.Fatal().Err(result.Error).Msg("Error creating database")
 	}
 }
 
-func DeleteDb(dbName string) {
+func DeleteDB(dbName string) {
 	result := DB.Exec("DROP DATABASE " + dbName)
 	if result.Error != nil {
 		log.Fatal().Err(result.Error).Msg("Error deleting database")

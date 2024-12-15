@@ -63,7 +63,7 @@ func AddRoutes(api huma.API) {
 		Summary:     "Get to db with raw_sql",
 		Tags:        []string{"db_example"},
 	},
-		dbexample.GetRawSql,
+		dbexample.GetRawSQL,
 	)
 
 	huma.Register(api, huma.Operation{
@@ -84,6 +84,6 @@ func AddRoutes(api huma.API) {
 		Tags:          []string{"db_example"},
 		DefaultStatus: http.StatusCreated,
 	},
-		dbexample.PostRawSql,
+		dbexample.PostRawSQL,
 	)
 }

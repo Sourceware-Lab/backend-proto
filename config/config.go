@@ -31,17 +31,17 @@ type config struct {
 	ReleaseMode bool   `mapstructure:"RELEASE_MODE"`
 	DatabaseDSN string `mapstructure:"DATABASE_DSN"`
 }
-type DbDSN struct {
+type DBDSN struct {
 	Host     string
 	Port     int
 	User     string
 	Password string
-	DbName   string
+	DBName   string
 	SSLMode  string
 	TimeZone string
 }
 
-func (d *DbDSN) ParseDSN(dsn string) DbDSN {
+func (d *DBDSN) ParseDSN(dsn string) DBDSN {
 	parts := make(map[string]string)
 	for _, part := range strings.Split(dsn, " ") {
 		kv := strings.SplitN(part, "=", 2) //nolint:mnd
@@ -54,17 +54,17 @@ func (d *DbDSN) ParseDSN(dsn string) DbDSN {
 	d.Port, _ = strconv.Atoi(parts["port"])
 	d.User = parts["user"]
 	d.Password = parts["password"]
-	d.DbName = parts["dbname"]
+	d.DBName = parts["dbname"]
 	d.SSLMode = parts["sslmode"]
 	d.TimeZone = parts["TimeZone"]
 
 	return *d
 }
 
-func (d *DbDSN) String() string {
+func (d *DBDSN) String() string {
 	return fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s",
-		d.Host, d.User, d.Password, d.DbName, d.Port, d.SSLMode, d.TimeZone,
+		d.Host, d.User, d.Password, d.DBName, d.Port, d.SSLMode, d.TimeZone,
 	)
 }
 

@@ -11,8 +11,8 @@ import (
 	DBpostgres "github.com/Sourceware-Lab/backend-proto/database/postgres"
 )
 
-func GetRawSql(ctx context.Context, input *GetInputDbExample) (*GetOutputDbExample, error) {
-	resp := &GetOutputDbExample{}
+func GetRawSQL(_ context.Context, input *GetInputDBExample) (*GetOutputDBExample, error) {
+	resp := &GetOutputDBExample{}
 	id, err := strconv.Atoi(input.ID)
 	if err != nil {
 		log.Error().Err(err).Msg("Error parsing ID")
@@ -26,8 +26,8 @@ func GetRawSql(ctx context.Context, input *GetInputDbExample) (*GetOutputDbExamp
 	return resp, nil
 }
 
-func PostRawSql(ctx context.Context, input *PostInputDbExample) (*PostOutputDbExample, error) {
-	resp := &PostOutputDbExample{}
+func PostRawSQL(_ context.Context, input *PostInputDBExample) (*PostOutputDBExample, error) {
+	resp := &PostOutputDBExample{}
 
 	var email *string
 	if input.Body.Email != "" {
@@ -70,8 +70,8 @@ func PostRawSql(ctx context.Context, input *PostInputDbExample) (*PostOutputDbEx
 	return resp, nil
 }
 
-func GetOrm(ctx context.Context, input *GetInputDbExample) (*GetOutputDbExample, error) {
-	resp := &GetOutputDbExample{}
+func GetOrm(_ context.Context, input *GetInputDBExample) (*GetOutputDBExample, error) {
+	resp := &GetOutputDBExample{}
 	id, err := strconv.Atoi(input.ID)
 	if err != nil {
 		log.Error().Err(err).Msg("Error parsing ID")
@@ -90,8 +90,8 @@ func GetOrm(ctx context.Context, input *GetInputDbExample) (*GetOutputDbExample,
 	return resp, nil
 }
 
-func PostOrm(ctx context.Context, input *PostInputDbExample) (*PostOutputDbExample, error) {
-	resp := &PostOutputDbExample{}
+func PostOrm(_ context.Context, input *PostInputDBExample) (*PostOutputDBExample, error) {
+	resp := &PostOutputDBExample{}
 	user := DBpostgres.User{
 		Name:         input.Body.Name,
 		Email:        nil,

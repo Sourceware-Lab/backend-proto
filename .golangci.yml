@@ -89,11 +89,11 @@ linters:
     - recvcheck
     - revive
     - rowserrcheck
-#    - sloglint
-#    - spancheck
-#    - sqlclosecheck
-#    - stylecheck
-#    - tagalign
+    - sloglint
+    - spancheck
+    - sqlclosecheck
+    - stylecheck
+    - tagalign
 #    - tagliatelle
 #    - tenv
 #    - testableexamples
@@ -112,7 +112,7 @@ linters:
 #    - zerologlint
   disable:
     - depguard
-  presets:
+  presets: []
   fast: false
 
 linters-settings:

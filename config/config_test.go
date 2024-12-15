@@ -11,17 +11,17 @@ func TestDbDSN_ParseDSN(t *testing.T) {
 	tests := []struct {
 		name   string
 		input  string
-		output DbDSN
+		output DBDSN
 	}{
 		{
 			name:  "valid DSN",
 			input: "host=localhost port=5432 user=testUsername password=testPassword dbname=testdb sslmode=disable TimeZone=UTC",
-			output: DbDSN{
+			output: DBDSN{
 				Host:     "localhost",
 				Port:     5432,
 				User:     "testUsername",
 				Password: "testPassword",
-				DbName:   "testdb",
+				DBName:   "testdb",
 				SSLMode:  "disable",
 				TimeZone: "UTC",
 			},
@@ -29,12 +29,12 @@ func TestDbDSN_ParseDSN(t *testing.T) {
 		{
 			name:  "missing optional fields in DSN",
 			input: "host=127.0.0.1 port=3306 user=root dbname=appdb sslmode=required",
-			output: DbDSN{
+			output: DBDSN{
 				Host:     "127.0.0.1",
 				Port:     3306,
 				User:     "root",
 				Password: "",
-				DbName:   "appdb",
+				DBName:   "appdb",
 				SSLMode:  "required",
 				TimeZone: "",
 			},
@@ -42,12 +42,12 @@ func TestDbDSN_ParseDSN(t *testing.T) {
 		{
 			name:  "empty DSN",
 			input: "",
-			output: DbDSN{
+			output: DBDSN{
 				Host:     "",
 				Port:     0,
 				User:     "",
 				Password: "",
-				DbName:   "",
+				DBName:   "",
 				SSLMode:  "",
 				TimeZone: "",
 			},
@@ -57,7 +57,7 @@ func TestDbDSN_ParseDSN(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			var d DbDSN
+			var d DBDSN
 			result := d.ParseDSN(tt.input)
 			if result != tt.output {
 				t.Errorf("ParseDSN(%q) = %v, want %v", tt.input, result, tt.output)
@@ -71,17 +71,17 @@ func TestDbDSN_String(t *testing.T) {
 
 	tests := []struct {
 		name   string
-		input  DbDSN
+		input  DBDSN
 		output string
 	}{
 		{
 			name: "basic DSN",
-			input: DbDSN{
+			input: DBDSN{
 				Host:     "localhost",
 				Port:     5432,
 				User:     "testUsername",
 				Password: "testPassword",
-				DbName:   "testdb",
+				DBName:   "testdb",
 				SSLMode:  "disable",
 				TimeZone: "UTC",
 			},
@@ -90,7 +90,7 @@ func TestDbDSN_String(t *testing.T) {
 		},
 		{
 			name:   "empty DSN",
-			input:  DbDSN{},
+			input:  DBDSN{},
 			output: "host= user= password= dbname= port=0 sslmode= TimeZone=",
 		},
 	}

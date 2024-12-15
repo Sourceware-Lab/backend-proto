@@ -4,7 +4,7 @@ import (
 	"context"
 )
 
-func Get(ctx context.Context, input *InputHealthcheck) (*OutputHealthcheck, error) {
+func Get(_ context.Context, _ *InputHealthcheck) (*OutputHealthcheck, error) {
 	resp := &OutputHealthcheck{}
 	resp.Status = 200
 

@@ -23,12 +23,12 @@ func setup() string {
 	DBpostgres.Open(config.Config.DatabaseDSN)
 
 	dbDSNString := config.Config.DatabaseDSN
-	dbDSN := config.DbDSN{}
+	dbDSN := config.DBDSN{}
 	dbDSN.ParseDSN(dbDSNString)
 	dbName := strings.ReplaceAll("testdb-"+uuid.New().String(), "-", "")
-	dbDSN.DbName = dbName
+	dbDSN.DBName = dbName
 
-	DBpostgres.CreateDb(dbName)
+	DBpostgres.CreateDB(dbName)
 
 	DBpostgres.Open(dbDSN.String())
 	DBpostgres.RunMigrations()
@@ -38,7 +38,7 @@ func setup() string {
 
 func teardown(dbName string) {
 	DBpostgres.Open(config.Config.DatabaseDSN)
-	DBpostgres.DeleteDb(dbName)
+	DBpostgres.DeleteDB(dbName)
 }
 
 //nolint:funlen
@@ -47,13 +47,13 @@ func TestRoutes(t *testing.T) {
 	tests := []struct {
 		name     string
 		basePath string
-		want     dbexample.PostInputDbExample
+		want     dbexample.PostInputDBExample
 	}{
 		{
 			name:     "get",
 			basePath: "/db_example/orm",
-			want: dbexample.PostInputDbExample{
-				Body: dbexample.PostBodyInputDbExampleBody{
+			want: dbexample.PostInputDBExample{
+				Body: dbexample.PostBodyInputDBExampleBody{
 					Name:         "jo",
 					Age:          25,
 					Email:        "jo@example.com",
@@ -65,8 +65,8 @@ func TestRoutes(t *testing.T) {
 		{
 			name:     "get",
 			basePath: "/db_example/raw_sql",
-			want: dbexample.PostInputDbExample{
-				Body: dbexample.PostBodyInputDbExampleBody{
+			want: dbexample.PostInputDBExample{
+				Body: dbexample.PostBodyInputDBExampleBody{
 					Name:         "jo1",
 					Age:          26,
 					Email:        "jo1@example.com",
@@ -92,20 +92,20 @@ func TestRoutes(t *testing.T) {
 
 			resp := api.Post(tt.basePath, tt.want.Body)
 
-			postRespBody := dbexample.PostOutputDbExample{}.Body
+			postRespBody := dbexample.PostOutputDBExample{}.Body
 			err := json.Unmarshal(resp.Body.Bytes(), &postRespBody)
 			if err != nil {
 				t.Fatalf("Failed to unmarshal response: %s", err.Error())
 			}
 
-			expectedPostBody := dbexample.PostOutputDbExample{}.Body
+			expectedPostBody := dbexample.PostOutputDBExample{}.Body
 			expectedPostBody.ID = "1"
 			if !cmp.Equal(postRespBody, expectedPostBody) {
 				t.Fatalf("Unexpected response: %s", resp.Body.String())
 			}
 
 			getResp := api.Get(tt.basePath + "/1")
-			getRespBody := dbexample.GetOutputDbExample{}
+			getRespBody := dbexample.GetOutputDBExample{}
 			err = json.Unmarshal(getResp.Body.Bytes(), &getRespBody)
 			if err != nil {
 				t.Fatalf("Failed to unmarshal response: %s", err.Error())
