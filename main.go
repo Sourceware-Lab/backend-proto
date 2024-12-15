@@ -41,6 +41,7 @@ func getCli() humacli.CLI {
 		} else {
 			gin.SetMode(gin.DebugMode)
 		}
+
 		gin.DisableConsoleColor()
 		gin.DefaultWriter = log.Logger
 		gin.DefaultErrorWriter = log.Logger
@@ -74,8 +75,10 @@ func main() {
 	config.LoadConfig()
 	config.InitLogger()
 	DBpostgres.Open(config.Config.DatabaseDSN)
+
 	defer DBpostgres.Close()
 	DBpostgres.RunMigrations()
+
 	cli := getCli()
 	cli.Run()
 }

@@ -23,6 +23,7 @@ func (p *PostInputDBExample) Format() *PostInputDBExample {
 		if err != nil {
 			return p
 		}
+
 		marshaledBirthday := birthday.Format(time.DateOnly)
 
 		p.Body.Birthday = &marshaledBirthday

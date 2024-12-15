@@ -99,19 +99,20 @@ linters:
     - testableexamples
     - testifylint
     - testpackage
-#    - thelper
-#    - tparallel
-#    - unconvert
-#    - unparam
-#    - usestdlibvars
-#    - varnamelen
-#    - wastedassign
-#    - whitespace
-#    - wrapcheck
-#    - wsl
-#    - zerologlint
+    - thelper
+    - tparallel
+    - unconvert
+    - unparam
+    - usestdlibvars
+    - wastedassign
+    - whitespace
+    - wrapcheck
+    - wsl
+    - zerologlint
   disable:
     - depguard
+    - varnamelen
+
   presets: []
   fast: false
 

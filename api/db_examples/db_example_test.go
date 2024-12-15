@@ -26,6 +26,7 @@ func setup() string {
 	dbDSNString := config.Config.DatabaseDSN
 	dbDSN := config.DBDSN{}
 	dbDSN.ParseDSN(dbDSNString)
+
 	dbName := strings.ReplaceAll("testdb-"+uuid.New().String(), "-", "")
 	dbDSN.DBName = dbName
 

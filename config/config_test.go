@@ -58,8 +58,10 @@ func TestDbDSN_ParseDSN(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			var d config.DBDSN
 			result := d.ParseDSN(tt.input)
+
 			if result != tt.output {
 				t.Errorf("ParseDSN(%q) = %v, want %v", tt.input, result, tt.output)
 			}
@@ -99,6 +101,7 @@ func TestDbDSN_String(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			result := tt.input.String()
 			if result != tt.output {
 				t.Errorf("String() = %q, want %q", result, tt.output)
@@ -120,15 +123,19 @@ func TestLoadConfig(t *testing.T) {
 	if config.Config.Port != 9090 {
 		t.Errorf("expected Port=9090, got %d", config.Config.Port)
 	}
+
 	if config.Config.LogLevel != "info" {
 		t.Errorf("expected LogLevel=info, got %s", config.Config.LogLevel)
 	}
+
 	if config.Config.DatabaseDSN != "host=localhost port=5432 user=test dbname=testdb sslmode=disable" {
 		t.Errorf("expected DatabaseDSN not matching, got %s", config.Config.DatabaseDSN)
 	}
+
 	if config.Config.ReleaseMode != true {
 		t.Errorf("expected ReleaseMode=true, got %v", config.Config.ReleaseMode)
 	}
+
 	if config.Config.ProjectDir != tmpDir {
 		t.Errorf("expected ProjectDir=%s, got %s", tmpDir, config.Config.ProjectDir)
 	}

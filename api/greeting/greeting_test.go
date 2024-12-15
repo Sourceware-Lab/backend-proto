@@ -104,12 +104,14 @@ func FuzzPostGreeting(f *testing.F) {
 
 			// json unmarshal needs a map/struct to put the data, it does not return a new object.
 			var unmarshalledFuzzingInput greeting.PostInputGreeting
+
 			var jsonData greeting.OutputGreeting
 
 			err = json.Unmarshal(marshaledFuzzyInput, &unmarshalledFuzzingInput.Body)
 			if err != nil {
 				t.Fatalf("Failed to unmarshal fuzzy input: %s", err.Error())
 			}
+
 			err = json.Unmarshal(resp.Body.Bytes(), &jsonData.Body)
 			if err != nil {
 				t.Fatalf("Failed to unmarshal response body: %s", err.Error())

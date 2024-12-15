@@ -26,6 +26,7 @@ var DatetimeFormats = []string{ //nolint:gochecknoglobals
 
 func ParseAnyDatetime(s string) (time.Time, error) {
 	parsedTime := time.Time{}
+
 	for _, layout := range DatetimeFormats {
 		if parsedTime, err := time.Parse(layout, s); err == nil {
 			return parsedTime, nil

@@ -43,6 +43,7 @@ type DBDSN struct {
 
 func (d *DBDSN) ParseDSN(dsn string) DBDSN {
 	parts := make(map[string]string)
+
 	for _, part := range strings.Split(dsn, " ") {
 		kv := strings.SplitN(part, "=", 2) //nolint:mnd
 		if len(kv) == 2 {                  //nolint:mnd
@@ -71,11 +72,14 @@ func (d *DBDSN) String() string {
 func InitLogger() {
 	homeDir := Config.ProjectDir
 	logDir := fmt.Sprintf("%s/%s/logs", homeDir, ProjectName)
+
 	err := os.MkdirAll(logDir, os.ModePerm)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error failed to make logDir")
 	}
+
 	logFileName := fmt.Sprintf("%s/%d.log", logDir, time.Now().Unix())
+
 	logFile, err := os.OpenFile(logFileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0o666) //nolint:mnd
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error opening file")
@@ -92,10 +96,12 @@ func LoadConfig() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error setting timezone")
 	}
+
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error getting home dir")
 	}
+
 	viper.SetDefault(EnvVarLogLevel, "debug")
 	viper.SetDefault(EnvVarPort, "8888")
 	viper.SetDefault(EnvVarProjectDir, homeDir)
@@ -117,6 +123,7 @@ func LoadConfig() {
 	} else {
 		log.Info().Msg("Using config file: " + viper.ConfigFileUsed())
 	}
+
 	viper.AutomaticEnv()
 	err = viper.Unmarshal(&Config)
 	if err != nil {
