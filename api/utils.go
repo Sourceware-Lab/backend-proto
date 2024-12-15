@@ -7,10 +7,22 @@ import (
 
 	dbexample "github.com/Sourceware-Lab/backend-proto/api/db_examples"
 	"github.com/Sourceware-Lab/backend-proto/api/greeting"
+	"github.com/Sourceware-Lab/backend-proto/api/healthcheck"
 )
 
 // AddRoutes This is to make testing easier. We can pass a testing API interface.
 func AddRoutes(api huma.API) {
+	huma.Register(api, huma.Operation{
+		OperationID: "healthcheck",
+		Method:      http.MethodGet,
+		Path:        "/healthcheck",
+		Summary:     "healthcheck",
+		Description: "healthcheck returns a 200 if the server is running.",
+		Tags:        []string{"Healthcheck"},
+	},
+		healthcheck.Get,
+	)
+
 	huma.Register(api, huma.Operation{
 		OperationID: "get-greeting",
 		Method:      http.MethodGet,
