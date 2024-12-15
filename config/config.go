@@ -3,7 +3,6 @@ package config
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -23,7 +22,7 @@ const (
 
 const ProjectName = "REPLACEME"
 
-var Config config
+var Config config //nolint:gochecknoglobals
 
 type config struct {
 	LogLevel    string `mapstructure:"LOG_LEVEL"`
@@ -32,21 +31,22 @@ type config struct {
 	ReleaseMode bool   `mapstructure:"RELEASE_MODE"`
 	DatabaseDSN string `mapstructure:"DATABASE_DSN"`
 }
-type DbDSN struct {
+type DBDSN struct {
 	Host     string
 	Port     int
 	User     string
 	Password string
-	DbName   string
+	DBName   string
 	SSLMode  string
 	TimeZone string
 }
 
-func (d *DbDSN) ParseDSN(dsn string) DbDSN {
+func (d *DBDSN) ParseDSN(dsn string) DBDSN {
 	parts := make(map[string]string)
+
 	for _, part := range strings.Split(dsn, " ") {
-		kv := strings.SplitN(part, "=", 2)
-		if len(kv) == 2 {
+		kv := strings.SplitN(part, "=", 2) //nolint:mnd
+		if len(kv) == 2 {                  //nolint:mnd
 			parts[kv[0]] = kv[1]
 		}
 	}
@@ -55,35 +55,32 @@ func (d *DbDSN) ParseDSN(dsn string) DbDSN {
 	d.Port, _ = strconv.Atoi(parts["port"])
 	d.User = parts["user"]
 	d.Password = parts["password"]
-	d.DbName = parts["dbname"]
+	d.DBName = parts["dbname"]
 	d.SSLMode = parts["sslmode"]
 	d.TimeZone = parts["TimeZone"]
 
 	return *d
 }
 
-func (d *DbDSN) String() string {
-	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s", d.Host, d.User, d.Password, d.DbName, d.Port, d.SSLMode, d.TimeZone)
-}
-
-func getRootDir() string {
-	exPath, err := filepath.Abs(".")
-	if err != nil {
-		log.Fatal().Err(err).Msg("Error getting root dir")
-	}
-	log.Info().Msg(fmt.Sprintf("ROOT_DIR: %s", exPath))
-	return exPath
+func (d *DBDSN) String() string {
+	return fmt.Sprintf(
+		"host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s",
+		d.Host, d.User, d.Password, d.DBName, d.Port, d.SSLMode, d.TimeZone,
+	)
 }
 
 func InitLogger() {
 	homeDir := Config.ProjectDir
 	logDir := fmt.Sprintf("%s/%s/logs", homeDir, ProjectName)
+
 	err := os.MkdirAll(logDir, os.ModePerm)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error failed to make logDir")
 	}
+
 	logFileName := fmt.Sprintf("%s/%d.log", logDir, time.Now().Unix())
-	logFile, err := os.OpenFile(logFileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+
+	logFile, err := os.OpenFile(logFileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0o666) //nolint:mnd
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error opening file")
 	}
@@ -91,7 +88,7 @@ func InitLogger() {
 	consoleWriter := zerolog.ConsoleWriter{Out: os.Stderr}
 	multi := zerolog.MultiLevelWriter(consoleWriter, logFile)
 	log.Logger = zerolog.New(multi).Level(zerolog.TraceLevel).With().Timestamp().Caller().Logger()
-	log.Info().Msg(fmt.Sprintf("Logging to %s", logFileName))
+	log.Info().Msg("Logging to " + logFileName)
 }
 
 func LoadConfig() {
@@ -99,15 +96,19 @@ func LoadConfig() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error setting timezone")
 	}
+
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error getting home dir")
 	}
+
 	viper.SetDefault(EnvVarLogLevel, "debug")
 	viper.SetDefault(EnvVarPort, "8888")
 	viper.SetDefault(EnvVarProjectDir, homeDir)
 	viper.SetDefault(EnvVarReleaseMode, "false")
-	viper.SetDefault(EnvVarDatabaseDSN, "host=localhost user=postgres password=local_fake dbname=postgres port=5432 sslmode=disable TimeZone=GMT")
+	viper.SetDefault(EnvVarDatabaseDSN,
+		"host=localhost user=postgres password=local_fake dbname=postgres port=5432 sslmode=disable TimeZone=GMT",
+	)
 
 	viper.SetConfigName(".env")
 	viper.SetConfigType("env")
@@ -120,9 +121,11 @@ func LoadConfig() {
 	if err != nil { // Handle errors reading the config file
 		log.Error().Err(err).Msg("No config file loaded")
 	} else {
-		log.Info().Msg(fmt.Sprintf("Using config file: %s", viper.ConfigFileUsed()))
+		log.Info().Msg("Using config file: " + viper.ConfigFileUsed())
 	}
+
 	viper.AutomaticEnv()
+
 	err = viper.Unmarshal(&Config)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error unmarshalling config")

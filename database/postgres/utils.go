@@ -1,7 +1,6 @@
-package DBpostgres
+package dbpostgres
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/rs/zerolog/log"
@@ -12,20 +11,23 @@ import (
 	"github.com/Sourceware-Lab/backend-proto/config"
 )
 
-var DB *gorm.DB
+var DB *gorm.DB //nolint:gochecknoglobals
 
 func Open(dsn string) {
 	if DB != nil {
-		openDb, err := DB.DB()
+		openDB, err := DB.DB()
 		if err != nil {
 			log.Fatal().Err(err).Msg("Error getting DB")
 		}
-		err = openDb.Close()
+
+		err = openDB.Close()
 		if err != nil {
 			log.Fatal().Err(err).Msg("Error closing DB")
 		}
+
 		DB = nil
 	}
+
 	dbZlog := log.Logger
 	newLogger := logger.New(
 		&dbZlog, // io writer
@@ -39,26 +41,35 @@ func Open(dsn string) {
 	)
 
 	var db *gorm.DB
+
 	var err error
+
 	retries := 3
+
 	retry := 0
+
 	for retry < retries {
 		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{Logger: newLogger})
 		if err == nil {
 			break
 		}
+
 		log.Info().Err(err).Msg("Error connecting to database, retrying in 3 seconds")
-		retry += 1
-		time.Sleep(3 * time.Second)
+
+		retry++
+
+		time.Sleep(3 * time.Second) //nolint:mnd
 	}
+
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error connecting to database")
 	}
+
 	if db == nil {
 		log.Fatal().Msg("Error connecting to database")
 	}
 
-	if config.Config.ReleaseMode == true {
+	if config.Config.ReleaseMode {
 		DB = db
 	} else {
 		DB = db.Debug()
@@ -66,29 +77,33 @@ func Open(dsn string) {
 }
 
 func Close() {
-	openDb, err := DB.DB()
+	openDB, err := DB.DB()
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error getting DB")
 	}
-	err = openDb.Close()
+
+	err = openDB.Close()
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error closing DB")
 	}
+
 	DB = nil
 }
 
-func CreateDb(dbName string) {
-	result := DB.Exec(fmt.Sprintf("CREATE DATABASE %s", dbName))
+func CreateDB(dbName string) {
+	result := DB.Exec("CREATE DATABASE " + dbName)
 	if result.Error != nil {
 		log.Fatal().Err(result.Error).Msg("Error creating database")
 	}
 }
-func DeleteDb(dbName string) {
-	result := DB.Exec(fmt.Sprintf("DROP DATABASE %s", dbName))
+
+func DeleteDB(dbName string) {
+	result := DB.Exec("DROP DATABASE " + dbName)
 	if result.Error != nil {
 		log.Fatal().Err(result.Error).Msg("Error deleting database")
 	}
 }
+
 func RunMigrations() {
 	err := DB.AutoMigrate(&User{})
 	if err != nil {

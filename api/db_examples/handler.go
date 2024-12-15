@@ -3,6 +3,7 @@ package dbexample
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -11,22 +12,24 @@ import (
 	DBpostgres "github.com/Sourceware-Lab/backend-proto/database/postgres"
 )
 
-func GetRawSql(ctx context.Context, input *GetInputDbExample) (resp *GetOutputDbExample, err error) {
-	resp = &GetOutputDbExample{}
-	id, err := strconv.Atoi(input.ID)
+func GetRawSQL(_ context.Context, input *GetInputDBExample) (*GetOutputDBExample, error) {
+	resp := &GetOutputDBExample{}
 
+	id, err := strconv.Atoi(input.ID)
 	if err != nil {
 		log.Error().Err(err).Msg("Error parsing ID")
-		return nil, err
+
+		return nil, fmt.Errorf("error parsing id: %w", err)
 	}
 
 	DBpostgres.DB.Raw("SELECT * FROM users WHERE id = ?", id).Scan(&resp.Body)
 	resp.Format()
-	return
+
+	return resp, nil
 }
 
-func PostRawSql(ctx context.Context, input *PostInputDbExample) (resp *PostOutputDbExample, err error) {
-	resp = &PostOutputDbExample{}
+func PostRawSQL(_ context.Context, input *PostInputDBExample) (*PostOutputDBExample, error) {
+	resp := &PostOutputDBExample{}
 
 	var email *string
 	if input.Body.Email != "" {
@@ -34,12 +37,15 @@ func PostRawSql(ctx context.Context, input *PostInputDbExample) (resp *PostOutpu
 	}
 
 	var birthday *time.Time
+
 	if input.Body.Birthday != nil {
 		parsedBirthday, err := time.Parse(time.DateOnly, *input.Body.Birthday)
 		if err != nil {
 			log.Error().Err(err).Msg("Error parsing birthday")
-			return nil, err
+
+			return nil, fmt.Errorf("error parsing birthday: %w", err)
 		}
+
 		birthday = &parsedBirthday
 	}
 
@@ -61,32 +67,37 @@ func PostRawSql(ctx context.Context, input *PostInputDbExample) (resp *PostOutpu
 
 	if result.Error != nil {
 		log.Error().Err(result.Error).Msg("Error inserting user")
+
 		return nil, result.Error
 	}
 
 	return resp, nil
 }
 
-func GetOrm(ctx context.Context, input *GetInputDbExample) (resp *GetOutputDbExample, err error) {
-	resp = &GetOutputDbExample{}
-	id, err := strconv.Atoi(input.ID)
+func GetOrm(_ context.Context, input *GetInputDBExample) (*GetOutputDBExample, error) {
+	resp := &GetOutputDBExample{}
 
+	id, err := strconv.Atoi(input.ID)
 	if err != nil {
 		log.Error().Err(err).Msg("Error parsing ID")
-		return nil, err
+
+		return nil, fmt.Errorf("error parsing id: %w", err)
 	}
 
-	result := DBpostgres.DB.Model(DBpostgres.User{}).Where(DBpostgres.User{ID: uint(id)}).First(&resp.Body)
+	result := DBpostgres.DB.Model(DBpostgres.User{}).Where(DBpostgres.User{ID: uint(id)}).First(&resp.Body) //nolint:gosec
 	if result.Error != nil {
 		log.Error().Err(result.Error).Msg("Error getting user")
+
 		return nil, result.Error
 	}
+
 	resp.Format()
-	return
+
+	return resp, nil
 }
 
-func PostOrm(ctx context.Context, input *PostInputDbExample) (resp *PostOutputDbExample, err error) {
-	resp = &PostOutputDbExample{}
+func PostOrm(_ context.Context, input *PostInputDBExample) (*PostOutputDBExample, error) {
+	resp := &PostOutputDBExample{}
 	user := DBpostgres.User{
 		Name:         input.Body.Name,
 		Email:        nil,
@@ -95,27 +106,35 @@ func PostOrm(ctx context.Context, input *PostInputDbExample) (resp *PostOutputDb
 		ActivatedAt:  sql.NullTime{},
 		Age:          input.Body.Age,
 	}
+
 	if input.Body.Email != "" {
 		user.Email = &input.Body.Email
 	}
+
 	if input.Body.Birthday != nil {
 		birthday, err := time.Parse(time.DateOnly, *input.Body.Birthday)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("error parsing birthday: %w", err)
 		}
+
 		user.Birthday = &birthday
 	}
+
 	if input.Body.MemberNumber != nil {
 		user.MemberNumber = sql.NullString{
 			String: *input.Body.MemberNumber,
 			Valid:  true,
 		}
 	}
+
 	result := DBpostgres.DB.Create(&user) // NOTE. This is a POINTER!
 	if result.Error != nil {
 		log.Error().Err(result.Error).Msg("Error creating user")
+
 		return nil, result.Error
 	}
-	resp.Body.ID = strconv.Itoa(int(user.ID))
-	return
+
+	resp.Body.ID = strconv.Itoa(int(user.ID)) //nolint:gosec
+
+	return resp, nil
 }

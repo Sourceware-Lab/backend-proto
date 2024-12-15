@@ -3,14 +3,17 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humagin"
-	_ "github.com/danielgtaylor/huma/v2/formats/cbor"
 	"github.com/danielgtaylor/huma/v2/humacli"
-	ginLogger "github.com/gin-contrib/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
+
+	_ "github.com/danielgtaylor/huma/v2/formats/cbor"
+
+	ginLogger "github.com/gin-contrib/logger"
 
 	beApi "github.com/Sourceware-Lab/backend-proto/api"
 	"github.com/Sourceware-Lab/backend-proto/config"
@@ -27,18 +30,18 @@ func (o *Options) loadFromViper() {
 	o.Port = config.Config.Port
 }
 
-func getCli() (cli humacli.CLI) { // this -> (cli humacli.CLI) is a really cool go feature. It inits the var, and
-	// when you use a raw return it will return the var called cli. This improves the go auto docs.
-
-	cli = humacli.New(func(hooks humacli.Hooks, options *Options) {
+//nolint:ireturn
+func getCli() humacli.CLI {
+	cli := humacli.New(func(hooks humacli.Hooks, options *Options) {
 		log.Info().Msg("Starting server")
 		options.loadFromViper()
 
-		if config.Config.ReleaseMode == true {
+		if config.Config.ReleaseMode {
 			gin.SetMode(gin.ReleaseMode)
 		} else {
 			gin.SetMode(gin.DebugMode)
 		}
+
 		gin.DisableConsoleColor()
 		gin.DefaultWriter = log.Logger
 		gin.DefaultErrorWriter = log.Logger
@@ -53,18 +56,29 @@ func getCli() (cli humacli.CLI) { // this -> (cli humacli.CLI) is a really cool 
 		// Tell the CLI how to start your server.
 		hooks.OnStart(func() {
 			log.Info().Msg(fmt.Sprintf("Starting server on port %d...\n", options.Port))
-			_ = http.ListenAndServe(fmt.Sprintf(":%d", options.Port), router)
+			server := &http.Server{
+				IdleTimeout:       300 * time.Second, //nolint:mnd
+				ReadTimeout:       300 * time.Second, //nolint:mnd
+				WriteTimeout:      300 * time.Second, //nolint:mnd
+				ReadHeaderTimeout: 10 * time.Second,  //nolint:mnd
+				Addr:              fmt.Sprintf(":%d", options.Port),
+				Handler:           router,
+			}
+			_ = server.ListenAndServe()
 		})
 	})
-	return
+
+	return cli
 }
 
 func main() {
 	config.LoadConfig()
 	config.InitLogger()
 	DBpostgres.Open(config.Config.DatabaseDSN)
+
 	defer DBpostgres.Close()
 	DBpostgres.RunMigrations()
+
 	cli := getCli()
 	cli.Run()
 }

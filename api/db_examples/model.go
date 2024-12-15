@@ -6,42 +6,44 @@ import (
 	"github.com/Sourceware-Lab/backend-proto/internal/utils"
 )
 
-type GetInputDbExample struct {
-	ID string `path:"id" example:"999" doc:"Id for the user you want to get"`
+type GetInputDBExample struct {
+	ID string `doc:"Id for the user you want to get" example:"999" path:"id"`
 }
-type GetOutputDbExample struct {
-	PostInputDbExample
-}
-
-type PostInputDbExample struct {
-	Body PostBodyInputDbExampleBody
+type GetOutputDBExample struct {
+	PostInputDBExample
 }
 
-func (p *PostInputDbExample) Format() *PostInputDbExample {
+type PostInputDBExample struct {
+	Body PostBodyInputDBExampleBody `json:"body"`
+}
+
+func (p *PostInputDBExample) Format() *PostInputDBExample {
 	if p.Body.Birthday != nil {
 		birthday, err := utils.ParseAnyDatetime(*p.Body.Birthday)
 		if err != nil {
 			return p
 		}
+
 		marshaledBirthday := birthday.Format(time.DateOnly)
 
 		p.Body.Birthday = &marshaledBirthday
 	}
+
 	return p
 }
 
-type PostBodyInputDbExampleBody struct {
-	Name string `path:"name" maxLength:"100" example:"Jo" doc:"Name for new user"`
-	Age  uint8  `path:"age" example:"25" doc:"Age for new user"`
+type PostBodyInputDBExampleBody struct {
+	Name string `doc:"Name for new user" example:"Jo" json:"name" maxLength:"100" path:"name"`
+	Age  uint8  `doc:"Age for new user"  example:"25" json:"age"  path:"age"`
 
 	// Optional
-	Email        string  `path:"email" maxLength:"100" example:"jo@example.com" doc:"Email for new user" required:"false"`
-	Birthday     *string `path:"birthday" example:"2006-01-02" doc:"Birthday for new user" required:"false" format:"date"`
-	MemberNumber *string `path:"member_number" example:"123456" doc:"Member number for new user" required:"false"`
+	Email        string  `doc:"Email for new user"         example:"jo@example.com" json:"email"        maxLength:"100"     path:"email"     required:"false"` //nolint:lll
+	Birthday     *string `doc:"Birthday for new user"      example:"2006-01-02"     format:"date"       json:"birthday"     path:"birthday"  required:"false"` //nolint:lll
+	MemberNumber *string `doc:"Member number for new user" example:"123456"         json:"memberNumber" path:"memberNumber" required:"false"`                  //nolint:lll
 }
 
-type PostOutputDbExample struct {
+type PostOutputDBExample struct {
 	Body struct {
-		ID string `json:"id" example:"999" doc:"Id for new user"`
+		ID string `doc:"Id for new user" example:"999" json:"id"`
 	}
 }
