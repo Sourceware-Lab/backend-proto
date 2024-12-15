@@ -18,3 +18,8 @@ prod: down
 test_no_docker:
 	go test -race ./...
 	./fuzz.sh
+
+lint:
+	go vet
+	go fmt
+	golangci-lint run --fix ./...
