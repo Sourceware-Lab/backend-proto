@@ -11,7 +11,7 @@ import (
 	"github.com/Sourceware-Lab/backend-proto/api/greeting"
 )
 
-// Happy path test
+// Happy path test.
 func TestGetGreeting(t *testing.T) {
 	_, api := humatest.New(t)
 
@@ -34,7 +34,7 @@ func TestGetGreetingMissingPath(t *testing.T) {
 	}
 }
 
-// Happy path test
+// Happy path test.
 func TestPostGreeting(t *testing.T) {
 	_, api := humatest.New(t)
 

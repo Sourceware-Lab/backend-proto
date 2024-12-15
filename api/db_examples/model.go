@@ -7,7 +7,7 @@ import (
 )
 
 type GetInputDbExample struct {
-	ID string `path:"id" example:"999" doc:"Id for the user you want to get"`
+	ID string `doc:"Id for the user you want to get" example:"999" path:"id"`
 }
 type GetOutputDbExample struct {
 	PostInputDbExample
@@ -31,17 +31,17 @@ func (p *PostInputDbExample) Format() *PostInputDbExample {
 }
 
 type PostBodyInputDbExampleBody struct {
-	Name string `path:"name" maxLength:"100" example:"Jo" doc:"Name for new user"`
-	Age  uint8  `path:"age" example:"25" doc:"Age for new user"`
+	Name string `doc:"Name for new user" example:"Jo" maxLength:"100" path:"name"`
+	Age  uint8  `doc:"Age for new user"  example:"25" path:"age"`
 
 	// Optional
-	Email        string  `path:"email" maxLength:"100" example:"jo@example.com" doc:"Email for new user" required:"false"`
-	Birthday     *string `path:"birthday" example:"2006-01-02" doc:"Birthday for new user" required:"false" format:"date"`
-	MemberNumber *string `path:"member_number" example:"123456" doc:"Member number for new user" required:"false"`
+	Email        string  `doc:"Email for new user"         example:"jo@example.com" maxLength:"100"      path:"email"     required:"false"`
+	Birthday     *string `doc:"Birthday for new user"      example:"2006-01-02"     format:"date"        path:"birthday"  required:"false"`
+	MemberNumber *string `doc:"Member number for new user" example:"123456"         path:"member_number" required:"false"`
 }
 
 type PostOutputDbExample struct {
 	Body struct {
-		ID string `json:"id" example:"999" doc:"Id for new user"`
+		ID string `doc:"Id for new user" example:"999" json:"id"`
 	}
 }

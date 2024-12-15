@@ -83,7 +83,7 @@ func InitLogger() {
 		log.Fatal().Err(err).Msg("Error failed to make logDir")
 	}
 	logFileName := fmt.Sprintf("%s/%d.log", logDir, time.Now().Unix())
-	logFile, err := os.OpenFile(logFileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	logFile, err := os.OpenFile(logFileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0o666)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error opening file")
 	}

@@ -1,4 +1,4 @@
-package DBpostgres
+package dbpostgres
 
 import (
 	"database/sql"

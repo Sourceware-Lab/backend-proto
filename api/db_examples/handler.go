@@ -14,7 +14,6 @@ import (
 func GetRawSql(ctx context.Context, input *GetInputDbExample) (resp *GetOutputDbExample, err error) {
 	resp = &GetOutputDbExample{}
 	id, err := strconv.Atoi(input.ID)
-
 	if err != nil {
 		log.Error().Err(err).Msg("Error parsing ID")
 		return nil, err
@@ -70,7 +69,6 @@ func PostRawSql(ctx context.Context, input *PostInputDbExample) (resp *PostOutpu
 func GetOrm(ctx context.Context, input *GetInputDbExample) (resp *GetOutputDbExample, err error) {
 	resp = &GetOutputDbExample{}
 	id, err := strconv.Atoi(input.ID)
-
 	if err != nil {
 		log.Error().Err(err).Msg("Error parsing ID")
 		return nil, err

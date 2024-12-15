@@ -6,11 +6,13 @@ import (
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humagin"
-	_ "github.com/danielgtaylor/huma/v2/formats/cbor"
 	"github.com/danielgtaylor/huma/v2/humacli"
-	ginLogger "github.com/gin-contrib/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
+
+	_ "github.com/danielgtaylor/huma/v2/formats/cbor"
+
+	ginLogger "github.com/gin-contrib/logger"
 
 	beApi "github.com/Sourceware-Lab/backend-proto/api"
 	"github.com/Sourceware-Lab/backend-proto/config"
@@ -34,7 +36,7 @@ func getCli() (cli humacli.CLI) { // this -> (cli humacli.CLI) is a really cool 
 		log.Info().Msg("Starting server")
 		options.loadFromViper()
 
-		if config.Config.ReleaseMode == true {
+		if config.Config.ReleaseMode {
 			gin.SetMode(gin.ReleaseMode)
 		} else {
 			gin.SetMode(gin.DebugMode)

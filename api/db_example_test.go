@@ -41,6 +41,7 @@ func teardown(dbName string) {
 	DBpostgres.DeleteDb(dbName)
 }
 
+//nolint:funlen
 func TestRoutes(t *testing.T) {
 	tests := []struct {
 		name     string

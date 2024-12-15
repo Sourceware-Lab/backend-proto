@@ -1,4 +1,4 @@
-package DBpostgres
+package dbpostgres
 
 import (
 	"fmt"
@@ -83,12 +83,14 @@ func CreateDb(dbName string) {
 		log.Fatal().Err(result.Error).Msg("Error creating database")
 	}
 }
+
 func DeleteDb(dbName string) {
 	result := DB.Exec(fmt.Sprintf("DROP DATABASE %s", dbName))
 	if result.Error != nil {
 		log.Fatal().Err(result.Error).Msg("Error deleting database")
 	}
 }
+
 func RunMigrations() {
 	err := DB.AutoMigrate(&User{})
 	if err != nil {
