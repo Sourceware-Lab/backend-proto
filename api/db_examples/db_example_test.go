@@ -98,8 +98,8 @@ func TestRoutes(t *testing.T) {
 			resp := apiInstance.Post(tt.basePath, tt.want.Body)
 
 			postRespBody := dbexample.PostOutputDBExample{}.Body
-			err := json.Unmarshal(resp.Body.Bytes(), &postRespBody)
 
+			err := json.Unmarshal(resp.Body.Bytes(), &postRespBody)
 			if err != nil {
 				t.Fatalf("Failed to unmarshal response: %s", err.Error())
 			}
@@ -113,8 +113,8 @@ func TestRoutes(t *testing.T) {
 
 			getResp := apiInstance.Get(tt.basePath + "/1")
 			getRespBody := dbexample.GetOutputDBExample{}
-			err = json.Unmarshal(getResp.Body.Bytes(), &getRespBody)
 
+			err = json.Unmarshal(getResp.Body.Bytes(), &getRespBody)
 			if err != nil {
 				t.Fatalf("Failed to unmarshal response: %s", err.Error())
 			}

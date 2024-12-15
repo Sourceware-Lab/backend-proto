@@ -125,8 +125,8 @@ func LoadConfig() {
 	}
 
 	viper.AutomaticEnv()
-	err = viper.Unmarshal(&Config)
 
+	err = viper.Unmarshal(&Config)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error unmarshalling config")
 	}
