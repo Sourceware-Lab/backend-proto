@@ -10,6 +10,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
+	"go.opentelemetry.io/otel"
 )
 
 const (
@@ -23,6 +24,7 @@ const (
 const ProjectName = "REPLACEME"
 
 var Config config //nolint:gochecknoglobals
+var Tracer = otel.Tracer("REPLACEME")
 
 type config struct {
 	LogLevel    string `mapstructure:"LOG_LEVEL"`
@@ -103,7 +105,7 @@ func LoadConfig() {
 	}
 
 	viper.SetDefault(EnvVarLogLevel, "debug")
-	viper.SetDefault(EnvVarPort, "8888")
+	viper.SetDefault(EnvVarPort, "18877")
 	viper.SetDefault(EnvVarProjectDir, homeDir)
 	viper.SetDefault(EnvVarReleaseMode, "false")
 	viper.SetDefault(EnvVarDatabaseDSN,
