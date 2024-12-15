@@ -72,14 +72,14 @@ linters:
     - musttag
     - nakedret
     - nestif
-#    - nilerr
-#    - nilnil
-#    - nlreturn
-#    - noctx
-#    - nolintlint
-#    - nonamedreturns
-#    - nosprintfhostport
-#    - paralleltest
+    - nilerr
+    - nilnil
+    - nlreturn
+    - noctx
+    - nolintlint
+    - nonamedreturns
+    - nosprintfhostport
+    - paralleltest
 #    - perfsprint
 #    - prealloc
 #    - predeclared

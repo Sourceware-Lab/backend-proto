@@ -68,6 +68,7 @@ func getCli() (cli humacli.CLI) { // this -> (cli humacli.CLI) is a really cool 
 			_ = server.ListenAndServe()
 		})
 	})
+
 	return cli
 }
 

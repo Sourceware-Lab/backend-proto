@@ -33,6 +33,7 @@ func setup() (dbName string) {
 
 	DBpostgres.Open(dbDSN.String())
 	DBpostgres.RunMigrations()
+
 	return dbName
 }
 

@@ -27,6 +27,7 @@ func (p *PostInputDbExample) Format() *PostInputDbExample {
 
 		p.Body.Birthday = &marshaledBirthday
 	}
+
 	return p
 }
 

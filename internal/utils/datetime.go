@@ -30,5 +30,6 @@ func ParseAnyDatetime(s string) (parsedTime time.Time, err error) {
 			return parsedTime, nil
 		}
 	}
+
 	return parsedTime, nil
 }

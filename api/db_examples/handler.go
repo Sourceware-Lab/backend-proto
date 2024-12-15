@@ -16,11 +16,13 @@ func GetRawSql(ctx context.Context, input *GetInputDbExample) (resp *GetOutputDb
 	id, err := strconv.Atoi(input.ID)
 	if err != nil {
 		log.Error().Err(err).Msg("Error parsing ID")
+
 		return nil, err
 	}
 
 	DBpostgres.DB.Raw("SELECT * FROM users WHERE id = ?", id).Scan(&resp.Body)
 	resp.Format()
+
 	return
 }
 
@@ -37,6 +39,7 @@ func PostRawSql(ctx context.Context, input *PostInputDbExample) (resp *PostOutpu
 		parsedBirthday, err := time.Parse(time.DateOnly, *input.Body.Birthday)
 		if err != nil {
 			log.Error().Err(err).Msg("Error parsing birthday")
+
 			return nil, err
 		}
 		birthday = &parsedBirthday
@@ -60,6 +63,7 @@ func PostRawSql(ctx context.Context, input *PostInputDbExample) (resp *PostOutpu
 
 	if result.Error != nil {
 		log.Error().Err(result.Error).Msg("Error inserting user")
+
 		return nil, result.Error
 	}
 
@@ -71,15 +75,18 @@ func GetOrm(ctx context.Context, input *GetInputDbExample) (resp *GetOutputDbExa
 	id, err := strconv.Atoi(input.ID)
 	if err != nil {
 		log.Error().Err(err).Msg("Error parsing ID")
+
 		return nil, err
 	}
 
 	result := DBpostgres.DB.Model(DBpostgres.User{}).Where(DBpostgres.User{ID: uint(id)}).First(&resp.Body) //nolint:gosec
 	if result.Error != nil {
 		log.Error().Err(result.Error).Msg("Error getting user")
+
 		return nil, result.Error
 	}
 	resp.Format()
+
 	return
 }
 
@@ -112,8 +119,10 @@ func PostOrm(ctx context.Context, input *PostInputDbExample) (resp *PostOutputDb
 	result := DBpostgres.DB.Create(&user) // NOTE. This is a POINTER!
 	if result.Error != nil {
 		log.Error().Err(result.Error).Msg("Error creating user")
+
 		return nil, result.Error
 	}
 	resp.Body.ID = strconv.Itoa(int(user.ID)) //nolint:gosec
+
 	return resp, nil
 }
