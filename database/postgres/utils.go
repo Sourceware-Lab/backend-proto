@@ -8,6 +8,8 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+
+	"github.com/Sourceware-Lab/backend-proto/config"
 )
 
 var DB *gorm.DB
@@ -51,8 +53,27 @@ func Open(dsn string) {
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error connecting to database")
 	}
+	if db == nil {
+		log.Fatal().Msg("Error connecting to database")
+	}
 
-	DB = db
+	if config.Config.ReleaseMode == true {
+		DB = db
+	} else {
+		DB = db.Debug()
+	}
+}
+
+func Close() {
+	openDb, err := DB.DB()
+	if err != nil {
+		log.Fatal().Err(err).Msg("Error getting DB")
+	}
+	err = openDb.Close()
+	if err != nil {
+		log.Fatal().Err(err).Msg("Error closing DB")
+	}
+	DB = nil
 }
 
 func CreateDb(dbName string) {

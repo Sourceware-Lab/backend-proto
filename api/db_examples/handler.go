@@ -11,14 +11,8 @@ import (
 	DBpostgres "github.com/Sourceware-Lab/backend-proto/database/postgres"
 )
 
-//	func PostRawSql(ctx context.Context, input *PostBodyInput) (*PostOutput, error) {
-//		resp := &PostOutput{}
-//		resp.Body.ID = "0"
-//		return resp, nil
-//	}
-func GetOrm(ctx context.Context, input *GetInputDbExample) (resp *GetOutputDbExample, err error) {
+func GetRawSql(ctx context.Context, input *GetInputDbExample) (resp *GetOutputDbExample, err error) {
 	resp = &GetOutputDbExample{}
-	user := DBpostgres.User{}
 	id, err := strconv.Atoi(input.ID)
 
 	if err != nil {
@@ -26,14 +20,31 @@ func GetOrm(ctx context.Context, input *GetInputDbExample) (resp *GetOutputDbExa
 		return nil, err
 	}
 
-	user.ID = uint(id)
+	DBpostgres.DB.Raw("SELECT * FROM users WHERE id = ?", id).Scan(&resp.Body)
+	resp.Format()
+	return
+}
 
-	result := DBpostgres.DB.First(&user)
+//	func PostRawSql(ctx context.Context, input *PostBodyInput) (*PostOutput, error) {
+//		resp := &PostOutput{}
+//		resp.Body.ID = "0"
+//		return resp, nil
+//	}
+func GetOrm(ctx context.Context, input *GetInputDbExample) (resp *GetOutputDbExample, err error) {
+	resp = &GetOutputDbExample{}
+	id, err := strconv.Atoi(input.ID)
+
+	if err != nil {
+		log.Error().Err(err).Msg("Error parsing ID")
+		return nil, err
+	}
+
+	result := DBpostgres.DB.Model(DBpostgres.User{}).Where(DBpostgres.User{ID: uint(id)}).First(&resp.Body)
 	if result.Error != nil {
 		log.Error().Err(result.Error).Msg("Error getting user")
 		return nil, result.Error
 	}
-	resp.fromUserORM(user)
+	resp.Format()
 	return
 }
 

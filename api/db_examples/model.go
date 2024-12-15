@@ -3,7 +3,7 @@ package dbexample
 import (
 	"time"
 
-	DBpostgres "github.com/Sourceware-Lab/backend-proto/database/postgres"
+	"github.com/Sourceware-Lab/backend-proto/internal/utils"
 )
 
 type GetInputDbExample struct {
@@ -11,21 +11,6 @@ type GetInputDbExample struct {
 }
 type GetOutputDbExample struct {
 	PostBodyInputDbExample
-}
-
-func (g *GetOutputDbExample) fromUserORM(user DBpostgres.User) *GetOutputDbExample {
-	var memberNumber *string
-
-	birthday := user.Birthday.Format(time.DateOnly)
-	if user.MemberNumber.Valid {
-		memberNumber = &user.MemberNumber.String
-	}
-	g.Body.Name = user.Name
-	g.Body.Age = user.Age
-	g.Body.Email = *user.Email
-	g.Body.Birthday = &birthday
-	g.Body.MemberNumber = memberNumber
-	return g
 }
 
 type PostOutputDbExample struct {
@@ -41,7 +26,20 @@ type PostBodyInputDbExample struct {
 
 		// Optional
 		Email        string  `path:"email" maxLength:"100" example:"jo@example.com" doc:"Email for new user" required:"false"`
-		Birthday     *string `path:"birthday" example:"2006-01-02" doc:"Birthday for new user" required:"false"`
+		Birthday     *string `path:"birthday" example:"2006-01-02" doc:"Birthday for new user" required:"false" format:"date"`
 		MemberNumber *string `path:"member_number" example:"123456" doc:"Member number for new user" required:"false"`
 	}
+}
+
+func (p *PostBodyInputDbExample) Format() *PostBodyInputDbExample {
+	if p.Body.Birthday != nil {
+		birthday, err := utils.ParseAnyDatetime(*p.Body.Birthday)
+		if err != nil {
+			return p
+		}
+		marshaledBirthday := birthday.Format(time.DateOnly)
+
+		p.Body.Birthday = &marshaledBirthday
+	}
+	return p
 }

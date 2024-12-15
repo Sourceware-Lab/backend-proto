@@ -63,6 +63,7 @@ func main() {
 	config.LoadConfig()
 	config.InitLogger()
 	DBpostgres.Open(config.Config.DatabaseDSN)
+	defer DBpostgres.Close()
 	DBpostgres.RunMigrations()
 	cli := getCli()
 	cli.Run()

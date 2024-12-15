@@ -46,6 +46,25 @@ func AddRoutes(api huma.API) {
 	//	dbexample.PostRawSql,
 	//)
 	huma.Register(api, huma.Operation{
+		OperationID: "get-dbexample_orm",
+		Method:      http.MethodGet,
+		Path:        "/db_example/orm/{id}",
+		Summary:     "Get to db with orm",
+		Tags:        []string{"db_example"},
+	},
+		dbexample.GetOrm,
+	)
+	huma.Register(api, huma.Operation{
+		OperationID: "get-dbexample_raw_sql",
+		Method:      http.MethodGet,
+		Path:        "/db_example/raw_sql/{id}",
+		Summary:     "Get to db with raw_sql",
+		Tags:        []string{"db_example"},
+	},
+		dbexample.GetRawSql,
+	)
+
+	huma.Register(api, huma.Operation{
 		OperationID:   "post-dbexample_orm",
 		Method:        http.MethodPost,
 		Path:          "/db_example/orm",
@@ -56,13 +75,4 @@ func AddRoutes(api huma.API) {
 		dbexample.PostOrm,
 	)
 
-	huma.Register(api, huma.Operation{
-		OperationID: "get-dbexample_orm",
-		Method:      http.MethodGet,
-		Path:        "/db_example/orm/{id}",
-		Summary:     "Get to db with orm",
-		Tags:        []string{"db_example"},
-	},
-		dbexample.GetOrm,
-	)
 }
