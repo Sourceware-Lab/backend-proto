@@ -1,4 +1,4 @@
-package api_test
+package dbexample_test
 
 import (
 	"encoding/json"
