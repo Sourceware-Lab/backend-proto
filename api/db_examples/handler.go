@@ -74,7 +74,7 @@ func GetOrm(ctx context.Context, input *GetInputDbExample) (resp *GetOutputDbExa
 		return nil, err
 	}
 
-	result := DBpostgres.DB.Model(DBpostgres.User{}).Where(DBpostgres.User{ID: uint(id)}).First(&resp.Body)
+	result := DBpostgres.DB.Model(DBpostgres.User{}).Where(DBpostgres.User{ID: uint(id)}).First(&resp.Body) //nolint:gosec
 	if result.Error != nil {
 		log.Error().Err(result.Error).Msg("Error getting user")
 		return nil, result.Error
@@ -114,6 +114,6 @@ func PostOrm(ctx context.Context, input *PostInputDbExample) (resp *PostOutputDb
 		log.Error().Err(result.Error).Msg("Error creating user")
 		return nil, result.Error
 	}
-	resp.Body.ID = strconv.Itoa(int(user.ID))
+	resp.Body.ID = strconv.Itoa(int(user.ID)) //nolint:gosec
 	return
 }

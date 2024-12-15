@@ -22,7 +22,7 @@ const (
 
 const ProjectName = "REPLACEME"
 
-var Config config
+var Config config //nolint:gochecknoglobals
 
 type config struct {
 	LogLevel    string `mapstructure:"LOG_LEVEL"`

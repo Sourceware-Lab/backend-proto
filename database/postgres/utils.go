@@ -12,7 +12,7 @@ import (
 	"github.com/Sourceware-Lab/backend-proto/config"
 )
 
-var DB *gorm.DB
+var DB *gorm.DB //nolint:gochecknoglobals
 
 func Open(dsn string) {
 	if DB != nil {

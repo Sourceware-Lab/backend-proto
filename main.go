@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humagin"
@@ -55,7 +56,15 @@ func getCli() (cli humacli.CLI) { // this -> (cli humacli.CLI) is a really cool 
 		// Tell the CLI how to start your server.
 		hooks.OnStart(func() {
 			log.Info().Msg(fmt.Sprintf("Starting server on port %d...\n", options.Port))
-			_ = http.ListenAndServe(fmt.Sprintf(":%d", options.Port), router)
+			server := &http.Server{
+				IdleTimeout:       300 * time.Second,
+				ReadTimeout:       300 * time.Second,
+				WriteTimeout:      300 * time.Second,
+				ReadHeaderTimeout: 10 * time.Second,
+				Addr:              fmt.Sprintf(":%d", options.Port),
+				Handler:           router,
+			}
+			_ = server.ListenAndServe()
 		})
 	})
 	return

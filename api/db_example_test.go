@@ -26,7 +26,7 @@ func setup() (dbName string) {
 	dbDSNString := config.Config.DatabaseDSN
 	dbDSN := config.DbDSN{}
 	dbDSN.ParseDSN(dbDSNString)
-	dbName = strings.Replace(fmt.Sprintf("testdb-%s", uuid.New().String()), "-", "", -1)
+	dbName = strings.ReplaceAll(fmt.Sprintf("testdb-%s", uuid.New().String()), "-", "")
 	dbDSN.DbName = dbName
 
 	DBpostgres.CreateDb(dbName)
@@ -86,7 +86,7 @@ func TestRoutes(t *testing.T) {
 			birthday := birthdayTime.Format(time.DateOnly)
 			tt.want.Body.Birthday = &birthday
 
-			memberNumber := strconv.Itoa(rand.Intn(1000000))
+			memberNumber := strconv.Itoa(rand.Intn(1000000)) //nolint:gosec
 			tt.want.Body.MemberNumber = &memberNumber
 
 			resp := api.Post(tt.basePath, tt.want.Body)
