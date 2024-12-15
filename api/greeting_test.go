@@ -13,6 +13,7 @@ import (
 
 // Happy path test.
 func TestGetGreeting(t *testing.T) {
+	t.Parallel()
 	_, api := humatest.New(t)
 
 	AddRoutes(api)
@@ -24,6 +25,7 @@ func TestGetGreeting(t *testing.T) {
 }
 
 func TestGetGreetingMissingPath(t *testing.T) {
+	t.Parallel()
 	_, api := humatest.New(t)
 
 	AddRoutes(api)
@@ -36,6 +38,7 @@ func TestGetGreetingMissingPath(t *testing.T) {
 
 // Happy path test.
 func TestPostGreeting(t *testing.T) {
+	t.Parallel()
 	_, api := humatest.New(t)
 
 	AddRoutes(api)
@@ -51,6 +54,8 @@ func TestPostGreeting(t *testing.T) {
 }
 
 func TestPostMissingBody(t *testing.T) {
+	t.Parallel()
+
 	_, api := humatest.New(t)
 
 	AddRoutes(api)

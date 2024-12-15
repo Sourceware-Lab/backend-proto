@@ -18,7 +18,7 @@ import (
 	DBpostgres "github.com/Sourceware-Lab/backend-proto/database/postgres"
 )
 
-func setup() (dbName string) {
+func setup() string {
 	config.LoadConfig()
 
 	DBpostgres.Open(config.Config.DatabaseDSN)
@@ -26,7 +26,7 @@ func setup() (dbName string) {
 	dbDSNString := config.Config.DatabaseDSN
 	dbDSN := config.DbDSN{}
 	dbDSN.ParseDSN(dbDSNString)
-	dbName = strings.ReplaceAll(fmt.Sprintf("testdb-%s", uuid.New().String()), "-", "")
+	dbName := strings.ReplaceAll(fmt.Sprintf("testdb-%s", uuid.New().String()), "-", "")
 	dbDSN.DbName = dbName
 
 	DBpostgres.CreateDb(dbName)
@@ -44,6 +44,7 @@ func teardown(dbName string) {
 
 //nolint:funlen
 func TestRoutes(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name     string
 		basePath string

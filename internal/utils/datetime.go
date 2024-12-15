@@ -24,9 +24,10 @@ var DatetimeFormats = []string{ //nolint:gochecknoglobals
 	time.TimeOnly,
 }
 
-func ParseAnyDatetime(s string) (parsedTime time.Time, err error) {
+func ParseAnyDatetime(s string) (time.Time, error) {
+	parsedTime := time.Time{}
 	for _, layout := range DatetimeFormats {
-		if parsedTime, err = time.Parse(layout, s); err == nil {
+		if parsedTime, err := time.Parse(layout, s); err == nil {
 			return parsedTime, nil
 		}
 	}

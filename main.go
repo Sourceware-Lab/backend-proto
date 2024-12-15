@@ -31,10 +31,8 @@ func (o *Options) loadFromViper() {
 }
 
 //nolint:ireturn
-func getCli() (cli humacli.CLI) { // this -> (cli humacli.CLI) is a really cool go feature. It inits the var, and
-	// when you use a raw return it will return the var called cli. This improves the go auto docs.
-
-	cli = humacli.New(func(hooks humacli.Hooks, options *Options) {
+func getCli() humacli.CLI {
+	cli := humacli.New(func(hooks humacli.Hooks, options *Options) {
 		log.Info().Msg("Starting server")
 		options.loadFromViper()
 

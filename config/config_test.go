@@ -7,6 +7,8 @@ import (
 )
 
 func TestDbDSN_ParseDSN(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name   string
 		input  string
@@ -55,6 +57,7 @@ func TestDbDSN_ParseDSN(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			var d DbDSN
 			result := d.ParseDSN(tt.input)
 			if result != tt.output {
@@ -65,6 +68,8 @@ func TestDbDSN_ParseDSN(t *testing.T) {
 }
 
 func TestDbDSN_String(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name   string
 		input  DbDSN
@@ -93,6 +98,7 @@ func TestDbDSN_String(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			result := tt.input.String()
 			if result != tt.output {
 				t.Errorf("String() = %q, want %q", result, tt.output)
@@ -102,6 +108,7 @@ func TestDbDSN_String(t *testing.T) {
 }
 
 func TestLoadConfig(t *testing.T) {
+	t.Parallel()
 	tmpDir := t.TempDir()
 	os.Setenv(fmt.Sprintf("%s_PORT", ProjectName), "9090")
 	os.Setenv(fmt.Sprintf("%s_LOG_LEVEL", ProjectName), "info")
