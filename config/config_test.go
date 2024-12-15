@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"os"
 	"testing"
 )
@@ -110,12 +109,11 @@ func TestDbDSN_String(t *testing.T) {
 func TestLoadConfig(t *testing.T) {
 	t.Parallel()
 	tmpDir := t.TempDir()
-	os.Setenv(fmt.Sprintf("%s_PORT", ProjectName), "9090")
-	os.Setenv(fmt.Sprintf("%s_LOG_LEVEL", ProjectName), "info")
-	os.Setenv(fmt.Sprintf("%s_DATABASE_DSN", ProjectName),
-		"host=localhost port=5432 user=test dbname=testdb sslmode=disable")
-	os.Setenv(fmt.Sprintf("%s_RELEASE_MODE", ProjectName), "true")
-	os.Setenv(fmt.Sprintf("%s_PROJECT_DIR", ProjectName), tmpDir)
+	os.Setenv(ProjectName+"_PORT", "9090")
+	os.Setenv(ProjectName+"_LOG_LEVEL", "info")
+	os.Setenv(ProjectName+"_DATABASE_DSN", "host=localhost port=5432 user=test dbname=testdb sslmode=disable")
+	os.Setenv(ProjectName+"_RELEASE_MODE", "true")
+	os.Setenv(ProjectName+"_PROJECT_DIR", tmpDir)
 
 	LoadConfig()
 

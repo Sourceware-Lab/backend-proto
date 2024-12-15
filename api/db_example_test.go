@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"math/rand"
 	"strconv"
 	"strings"
@@ -26,7 +25,7 @@ func setup() string {
 	dbDSNString := config.Config.DatabaseDSN
 	dbDSN := config.DbDSN{}
 	dbDSN.ParseDSN(dbDSNString)
-	dbName := strings.ReplaceAll(fmt.Sprintf("testdb-%s", uuid.New().String()), "-", "")
+	dbName := strings.ReplaceAll("testdb-"+uuid.New().String(), "-", "")
 	dbDSN.DbName = dbName
 
 	DBpostgres.CreateDb(dbName)

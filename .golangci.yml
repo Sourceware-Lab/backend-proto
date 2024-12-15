@@ -80,15 +80,15 @@ linters:
     - nonamedreturns
     - nosprintfhostport
     - paralleltest
-#    - perfsprint
-#    - prealloc
-#    - predeclared
-#    - promlinter
-#    - protogetter
-#    - reassign
-#    - recvcheck
-#    - revive
-#    - rowserrcheck
+    - perfsprint
+    - prealloc
+    - predeclared
+    - promlinter
+    - protogetter
+    - reassign
+    - recvcheck
+    - revive
+    - rowserrcheck
 #    - sloglint
 #    - spancheck
 #    - sqlclosecheck

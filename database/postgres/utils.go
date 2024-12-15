@@ -1,7 +1,6 @@
 package dbpostgres
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/rs/zerolog/log"
@@ -78,14 +77,14 @@ func Close() {
 }
 
 func CreateDb(dbName string) {
-	result := DB.Exec(fmt.Sprintf("CREATE DATABASE %s", dbName))
+	result := DB.Exec("CREATE DATABASE " + dbName)
 	if result.Error != nil {
 		log.Fatal().Err(result.Error).Msg("Error creating database")
 	}
 }
 
 func DeleteDb(dbName string) {
-	result := DB.Exec(fmt.Sprintf("DROP DATABASE %s", dbName))
+	result := DB.Exec("DROP DATABASE " + dbName)
 	if result.Error != nil {
 		log.Fatal().Err(result.Error).Msg("Error deleting database")
 	}

@@ -84,7 +84,7 @@ func InitLogger() {
 	consoleWriter := zerolog.ConsoleWriter{Out: os.Stderr}
 	multi := zerolog.MultiLevelWriter(consoleWriter, logFile)
 	log.Logger = zerolog.New(multi).Level(zerolog.TraceLevel).With().Timestamp().Caller().Logger()
-	log.Info().Msg(fmt.Sprintf("Logging to %s", logFileName))
+	log.Info().Msg("Logging to " + logFileName)
 }
 
 func LoadConfig() {
@@ -115,7 +115,7 @@ func LoadConfig() {
 	if err != nil { // Handle errors reading the config file
 		log.Error().Err(err).Msg("No config file loaded")
 	} else {
-		log.Info().Msg(fmt.Sprintf("Using config file: %s", viper.ConfigFileUsed()))
+		log.Info().Msg("Using config file: " + viper.ConfigFileUsed())
 	}
 	viper.AutomaticEnv()
 	err = viper.Unmarshal(&Config)
