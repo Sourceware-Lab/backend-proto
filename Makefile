@@ -9,7 +9,7 @@ run_local: down
 	air
 
 test: down
-	docker compose -f ./docker-compose.yml -f ./test.docker-compose.yml up --remove-orphans --build
+	docker compose -f ./docker-compose.yml -f ./test.docker-compose.yml up --abort-on-container-exit --remove-orphans --build
 
 prod: down
 	docker compose -f ./docker-compose.yml -f ./prod.docker-compose.yml up --remove-orphans --build

@@ -27,7 +27,7 @@ func TestDbDSN_ParseDSN(t *testing.T) {
 		},
 		{
 			name:  "missing optional fields in DSN",
-			input: "host=127.0.0.1 port=3306 user=root dbname=appdb sslmode=required",
+			input: "host=127.0.0.1 port=3306a user=root dbname=appdb sslmode=required",
 			output: DbDSN{
 				Host:     "127.0.0.1",
 				Port:     3306,
