@@ -25,11 +25,47 @@ func GetRawSql(ctx context.Context, input *GetInputDbExample) (resp *GetOutputDb
 	return
 }
 
-//	func PostRawSql(ctx context.Context, input *PostBodyInput) (*PostOutput, error) {
-//		resp := &PostOutput{}
-//		resp.Body.ID = "0"
-//		return resp, nil
-//	}
+func PostRawSql(ctx context.Context, input *PostBodyInputDbExample) (resp *PostOutputDbExample, err error) {
+	resp = &PostOutputDbExample{}
+
+	var email *string
+	if input.Body.Email != "" {
+		email = &input.Body.Email
+	}
+
+	var birthday *time.Time
+	if input.Body.Birthday != nil {
+		parsedBirthday, err := time.Parse(time.DateOnly, *input.Body.Birthday)
+		if err != nil {
+			log.Error().Err(err).Msg("Error parsing birthday")
+			return nil, err
+		}
+		birthday = &parsedBirthday
+	}
+
+	memberNumber := sql.NullString{}
+	if input.Body.MemberNumber != nil {
+		memberNumber = sql.NullString{
+			String: *input.Body.MemberNumber,
+			Valid:  true,
+		}
+	}
+
+	activatedAt := sql.NullTime{}
+
+	result := DBpostgres.DB.Raw(`
+        INSERT INTO users (name, email, birthday, member_number, activated_at, age)
+        VALUES (?, ?, ?, ?, ?, ?)
+        RETURNING id`,
+		input.Body.Name, email, birthday, memberNumber.String, activatedAt.Time, input.Body.Age).Scan(&resp.Body.ID)
+
+	if result.Error != nil {
+		log.Error().Err(result.Error).Msg("Error inserting user")
+		return nil, result.Error
+	}
+
+	return resp, nil
+}
 func GetOrm(ctx context.Context, input *GetInputDbExample) (resp *GetOutputDbExample, err error) {
 	resp = &GetOutputDbExample{}
 	id, err := strconv.Atoi(input.ID)

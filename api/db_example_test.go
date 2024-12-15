@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/danielgtaylor/huma/v2/humatest"
 	"github.com/google/go-cmp/cmp"
@@ -34,48 +35,83 @@ func setup() (dbName string) {
 	DBpostgres.RunMigrations()
 	return dbName
 }
+
 func teardown(dbName string) {
 	DBpostgres.Open(config.Config.DatabaseDSN)
 	DBpostgres.DeleteDb(dbName)
 }
-func TestPostOrm(t *testing.T) {
-	dbName := setup()
-	defer teardown(dbName)
-	_, api := humatest.New(t)
 
-	AddRoutes(api)
-
-	birthday := "2007-09-18"
-	memberNumber := strconv.Itoa(rand.Intn(1000000))
-
-	postBody := dbexample.PostBodyInputDbExample{}.Body
-	postBody.Age = 25
-	postBody.Name = "Jo"
-	postBody.Email = "jo@example.com"
-	postBody.Birthday = &birthday
-	postBody.MemberNumber = &memberNumber
-
-	resp := api.Post("/db_example/orm", postBody)
-	returnBody := dbexample.PostOutputDbExample{}.Body
-	err := json.Unmarshal(resp.Body.Bytes(), &returnBody)
-	if err != nil {
-		t.Fatalf("Failed to unmarshal response: %s", err.Error())
+func TestRoutes(t *testing.T) {
+	tests := []struct {
+		name     string
+		basePath string
+		want     dbexample.PostBodyInputDbExample
+	}{
+		{
+			name:     "get",
+			basePath: "/db_example/orm",
+			want: dbexample.PostBodyInputDbExample{
+				Body: dbexample.PostBodyInputDbExampleBody{
+					Name:         "jo",
+					Age:          25,
+					Email:        "jo@example.com",
+					Birthday:     nil,
+					MemberNumber: nil,
+				},
+			},
+		},
+		{
+			name:     "get",
+			basePath: "/db_example/raw_sql",
+			want: dbexample.PostBodyInputDbExample{
+				Body: dbexample.PostBodyInputDbExampleBody{
+					Name:         "jo1",
+					Age:          26,
+					Email:        "jo1@example.com",
+					Birthday:     nil,
+					MemberNumber: nil,
+				},
+			},
+		},
 	}
 
-	correctBody := dbexample.PostOutputDbExample{}.Body
-	correctBody.ID = "1"
+	for _, tt := range tests {
+		func() {
+			dbName := setup()
+			defer teardown(dbName)
+			_, api := humatest.New(t)
+			AddRoutes(api)
+			birthdayTime := time.Now().Add(time.Duration(-tt.want.Body.Age) * time.Hour * 24 * 365)
+			birthday := birthdayTime.Format(time.DateOnly)
+			tt.want.Body.Birthday = &birthday
 
-	if !cmp.Equal(returnBody, correctBody) {
-		t.Fatalf("Unexpected response: %s", resp.Body.String())
+			memberNumber := strconv.Itoa(rand.Intn(1000000))
+			tt.want.Body.MemberNumber = &memberNumber
+
+			resp := api.Post(tt.basePath, tt.want.Body)
+
+			postRespBody := dbexample.PostOutputDbExample{}.Body
+			err := json.Unmarshal(resp.Body.Bytes(), &postRespBody)
+			if err != nil {
+				t.Fatalf("Failed to unmarshal response: %s", err.Error())
+			}
+
+			expectedPostBody := dbexample.PostOutputDbExample{}.Body
+			expectedPostBody.ID = "1"
+			if !cmp.Equal(postRespBody, expectedPostBody) {
+				t.Fatalf("Unexpected response: %s", resp.Body.String())
+			}
+
+			getResp := api.Get(tt.basePath + "/1")
+			getRespBody := dbexample.GetOutputDbExample{}
+			err = json.Unmarshal(getResp.Body.Bytes(), &getRespBody)
+			if err != nil {
+				t.Fatalf("Failed to unmarshal response: %s", err.Error())
+			}
+
+			if !cmp.Equal(getRespBody.Body, tt.want.Body) {
+				t.Fatalf("Unexpected response: %s", getResp.Body.String())
+			}
+		}()
 	}
-	getResp := api.Get("/db_example/orm/1")
-	getRespBody := dbexample.GetOutputDbExample{}
-	err = json.Unmarshal(getResp.Body.Bytes(), &getRespBody)
-	if err != nil {
-		t.Fatalf("Failed to unmarshal response: %s", err.Error())
-	}
-	if !cmp.Equal(getRespBody.Body, postBody) {
-		t.Fatalf("Unexpected response: %s", getResp.Body.String())
-	}
-	// TODO check for the return ID and check the DB to see if it is in there OR use a get route to check for it
 }

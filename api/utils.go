@@ -74,5 +74,15 @@ func AddRoutes(api huma.API) {
 	},
 		dbexample.PostOrm,
 	)
+	huma.Register(api, huma.Operation{
+		OperationID:   "post-dbexample_raw_sql",
+		Method:        http.MethodPost,
+		Path:          "/db_example/raw_sql",
+		Summary:       "Post to db with raw sql",
+		Tags:          []string{"db_example"},
+		DefaultStatus: http.StatusCreated,
+	},
+		dbexample.PostRawSql,
+	)
 
 }
