@@ -10,7 +10,7 @@ type InputGreeting struct {
 	Name string `path:"name" maxLength:"30" example:"world" doc:"Name to greet"`
 }
 
-type PostBodyInputGreeting struct {
+type PostInputGreeting struct {
 	Body struct {
 		Name string `path:"name" maxLength:"30" example:"world" doc:"Name to greet"`
 	}

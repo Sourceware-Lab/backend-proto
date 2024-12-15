@@ -37,10 +37,11 @@ func Open(dsn string) {
 			Colorful:                  false,         // Disable color
 		},
 	)
-	retries := 3
-	retry := 0
+
 	var db *gorm.DB
 	var err error
+	retries := 3
+	retry := 0
 	for retry < retries {
 		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{Logger: newLogger})
 		if err == nil {

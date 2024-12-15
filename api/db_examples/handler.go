@@ -25,7 +25,7 @@ func GetRawSql(ctx context.Context, input *GetInputDbExample) (resp *GetOutputDb
 	return
 }
 
-func PostRawSql(ctx context.Context, input *PostBodyInputDbExample) (resp *PostOutputDbExample, err error) {
+func PostRawSql(ctx context.Context, input *PostInputDbExample) (resp *PostOutputDbExample, err error) {
 	resp = &PostOutputDbExample{}
 
 	var email *string
@@ -66,6 +66,7 @@ func PostRawSql(ctx context.Context, input *PostBodyInputDbExample) (resp *PostO
 
 	return resp, nil
 }
+
 func GetOrm(ctx context.Context, input *GetInputDbExample) (resp *GetOutputDbExample, err error) {
 	resp = &GetOutputDbExample{}
 	id, err := strconv.Atoi(input.ID)
@@ -84,7 +85,7 @@ func GetOrm(ctx context.Context, input *GetInputDbExample) (resp *GetOutputDbExa
 	return
 }
 
-func PostOrm(ctx context.Context, input *PostBodyInputDbExample) (resp *PostOutputDbExample, err error) {
+func PostOrm(ctx context.Context, input *PostInputDbExample) (resp *PostOutputDbExample, err error) {
 	resp = &PostOutputDbExample{}
 	user := DBpostgres.User{
 		Name:         input.Body.Name,

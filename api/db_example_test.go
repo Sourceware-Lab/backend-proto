@@ -45,12 +45,12 @@ func TestRoutes(t *testing.T) {
 	tests := []struct {
 		name     string
 		basePath string
-		want     dbexample.PostBodyInputDbExample
+		want     dbexample.PostInputDbExample
 	}{
 		{
 			name:     "get",
 			basePath: "/db_example/orm",
-			want: dbexample.PostBodyInputDbExample{
+			want: dbexample.PostInputDbExample{
 				Body: dbexample.PostBodyInputDbExampleBody{
 					Name:         "jo",
 					Age:          25,
@@ -63,7 +63,7 @@ func TestRoutes(t *testing.T) {
 		{
 			name:     "get",
 			basePath: "/db_example/raw_sql",
-			want: dbexample.PostBodyInputDbExample{
+			want: dbexample.PostInputDbExample{
 				Body: dbexample.PostBodyInputDbExampleBody{
 					Name:         "jo1",
 					Age:          26,

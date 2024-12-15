@@ -23,6 +23,8 @@ const (
 
 const ProjectName = "REPLACEME"
 
+var Config config
+
 type config struct {
 	LogLevel    string `mapstructure:"LOG_LEVEL"`
 	Port        int    `mapstructure:"PORT"`
@@ -63,6 +65,7 @@ func (d *DbDSN) ParseDSN(dsn string) DbDSN {
 func (d *DbDSN) String() string {
 	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s", d.Host, d.User, d.Password, d.DbName, d.Port, d.SSLMode, d.TimeZone)
 }
+
 func getRootDir() string {
 	exPath, err := filepath.Abs(".")
 	if err != nil {
@@ -71,8 +74,6 @@ func getRootDir() string {
 	log.Info().Msg(fmt.Sprintf("ROOT_DIR: %s", exPath))
 	return exPath
 }
-
-var Config config
 
 func InitLogger() {
 	homeDir := Config.ProjectDir

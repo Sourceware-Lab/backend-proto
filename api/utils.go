@@ -11,7 +11,6 @@ import (
 
 // AddRoutes This is to make testing easier. We can pass a testing API interface.
 func AddRoutes(api huma.API) {
-	// Register GET /greeting/{name}
 	huma.Register(api, huma.Operation{
 		OperationID: "get-greeting",
 		Method:      http.MethodGet,
@@ -23,7 +22,6 @@ func AddRoutes(api huma.API) {
 		greeting.Get,
 	)
 
-	// Register POST /reviews
 	huma.Register(api, huma.Operation{
 		OperationID:   "post-greeting",
 		Method:        http.MethodPost,
@@ -35,16 +33,6 @@ func AddRoutes(api huma.API) {
 		greeting.Post,
 	)
 
-	//huma.Register(api, huma.Operation{
-	//	OperationID:   "post-dbexample_raw",
-	//	Method:        http.MethodPost,
-	//	Path:          "/db_example/raw",
-	//	Summary:       "Post to db with raw sql",
-	//	Tags:          []string{"db_example"},
-	//	DefaultStatus: http.StatusCreated,
-	//},
-	//	dbexample.PostRawSql,
-	//)
 	huma.Register(api, huma.Operation{
 		OperationID: "get-dbexample_orm",
 		Method:      http.MethodGet,
