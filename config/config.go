@@ -44,8 +44,8 @@ type DbDSN struct {
 func (d *DbDSN) ParseDSN(dsn string) DbDSN {
 	parts := make(map[string]string)
 	for _, part := range strings.Split(dsn, " ") {
-		kv := strings.SplitN(part, "=", 2)
-		if len(kv) == 2 {
+		kv := strings.SplitN(part, "=", 2) //nolint:mnd
+		if len(kv) == 2 {                  //nolint:mnd
 			parts[kv[0]] = kv[1]
 		}
 	}
@@ -76,7 +76,7 @@ func InitLogger() {
 		log.Fatal().Err(err).Msg("Error failed to make logDir")
 	}
 	logFileName := fmt.Sprintf("%s/%d.log", logDir, time.Now().Unix())
-	logFile, err := os.OpenFile(logFileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0o666)
+	logFile, err := os.OpenFile(logFileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0o666) //nolint:mnd
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error opening file")
 	}
@@ -100,7 +100,9 @@ func LoadConfig() {
 	viper.SetDefault(EnvVarPort, "8888")
 	viper.SetDefault(EnvVarProjectDir, homeDir)
 	viper.SetDefault(EnvVarReleaseMode, "false")
-	viper.SetDefault(EnvVarDatabaseDSN, "host=localhost user=postgres password=local_fake dbname=postgres port=5432 sslmode=disable TimeZone=GMT")
+	viper.SetDefault(EnvVarDatabaseDSN,
+		"host=localhost user=postgres password=local_fake dbname=postgres port=5432 sslmode=disable TimeZone=GMT",
+	)
 
 	viper.SetConfigName(".env")
 	viper.SetConfigType("env")

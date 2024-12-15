@@ -30,6 +30,7 @@ func (o *Options) loadFromViper() {
 	o.Port = config.Config.Port
 }
 
+//nolint:ireturn
 func getCli() (cli humacli.CLI) { // this -> (cli humacli.CLI) is a really cool go feature. It inits the var, and
 	// when you use a raw return it will return the var called cli. This improves the go auto docs.
 
@@ -57,17 +58,17 @@ func getCli() (cli humacli.CLI) { // this -> (cli humacli.CLI) is a really cool 
 		hooks.OnStart(func() {
 			log.Info().Msg(fmt.Sprintf("Starting server on port %d...\n", options.Port))
 			server := &http.Server{
-				IdleTimeout:       300 * time.Second,
-				ReadTimeout:       300 * time.Second,
-				WriteTimeout:      300 * time.Second,
-				ReadHeaderTimeout: 10 * time.Second,
+				IdleTimeout:       300 * time.Second, //nolint:mnd
+				ReadTimeout:       300 * time.Second, //nolint:mnd
+				WriteTimeout:      300 * time.Second, //nolint:mnd
+				ReadHeaderTimeout: 10 * time.Second,  //nolint:mnd
 				Addr:              fmt.Sprintf(":%d", options.Port),
 				Handler:           router,
 			}
 			_ = server.ListenAndServe()
 		})
 	})
-	return
+	return cli
 }
 
 func main() {

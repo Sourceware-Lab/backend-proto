@@ -57,21 +57,21 @@ linters:
     - gosmopolitan
     - grouper
     - iface
-#    - importas
-#    - inamedparam
-#    - interfacebloat
-#    - intrange
-#    - ireturn
-#    - lll
-#    - loggercheck
-#    - maintidx
-#    - makezero
-#    - mirror
-#    - misspell
-#    - mnd
-#    - musttag
-#    - nakedret
-#    - nestif
+    - importas
+    - inamedparam
+    - interfacebloat
+    - intrange
+    - ireturn
+    - lll
+    - loggercheck
+    - maintidx
+    - makezero
+    - mirror
+    - misspell
+    - mnd
+    - musttag
+    - nakedret
+    - nestif
 #    - nilerr
 #    - nilnil
 #    - nlreturn

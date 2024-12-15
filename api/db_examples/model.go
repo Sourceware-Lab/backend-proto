@@ -14,7 +14,7 @@ type GetOutputDbExample struct {
 }
 
 type PostInputDbExample struct {
-	Body PostBodyInputDbExampleBody
+	Body PostBodyInputDbExampleBody `json:"body"`
 }
 
 func (p *PostInputDbExample) Format() *PostInputDbExample {
@@ -31,13 +31,13 @@ func (p *PostInputDbExample) Format() *PostInputDbExample {
 }
 
 type PostBodyInputDbExampleBody struct {
-	Name string `doc:"Name for new user" example:"Jo" maxLength:"100" path:"name"`
-	Age  uint8  `doc:"Age for new user"  example:"25" path:"age"`
+	Name string `json:"name" doc:"Name for new user" example:"Jo" maxLength:"100" path:"name"`
+	Age  uint8  `json:"age" doc:"Age for new user"  example:"25" path:"age"`
 
 	// Optional
-	Email        string  `doc:"Email for new user"         example:"jo@example.com" maxLength:"100"      path:"email"     required:"false"`
-	Birthday     *string `doc:"Birthday for new user"      example:"2006-01-02"     format:"date"        path:"birthday"  required:"false"`
-	MemberNumber *string `doc:"Member number for new user" example:"123456"         path:"member_number" required:"false"`
+	Email        string  `json:"email" doc:"Email for new user"         example:"jo@example.com" maxLength:"100"      path:"email"     required:"false"`    //nolint:lll
+	Birthday     *string `json:"birthday" doc:"Birthday for new user"      example:"2006-01-02"     format:"date"        path:"birthday"  required:"false"` //nolint:lll
+	MemberNumber *string `json:"member_number" doc:"Member number for new user" example:"123456"         path:"member_number" required:"false"`             //nolint:lll
 }
 
 type PostOutputDbExample struct {

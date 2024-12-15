@@ -115,5 +115,5 @@ func PostOrm(ctx context.Context, input *PostInputDbExample) (resp *PostOutputDb
 		return nil, result.Error
 	}
 	resp.Body.ID = strconv.Itoa(int(user.ID)) //nolint:gosec
-	return
+	return resp, nil
 }

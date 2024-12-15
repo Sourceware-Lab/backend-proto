@@ -49,7 +49,7 @@ func Open(dsn string) {
 		}
 		log.Info().Err(err).Msg("Error connecting to database, retrying in 3 seconds")
 		retry++
-		time.Sleep(3 * time.Second)
+		time.Sleep(3 * time.Second) //nolint:mnd
 	}
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error connecting to database")

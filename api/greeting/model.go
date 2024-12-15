@@ -12,6 +12,6 @@ type InputGreeting struct {
 
 type PostInputGreeting struct {
 	Body struct {
-		Name string `doc:"Name to greet" example:"world" maxLength:"30" path:"name"`
+		Name string `json:"name" doc:"Name to greet" example:"world" maxLength:"30" path:"name"`
 	}
 }

@@ -81,7 +81,8 @@ func TestDbDSN_String(t *testing.T) {
 				SSLMode:  "disable",
 				TimeZone: "UTC",
 			},
-			output: "host=localhost user=testUsername password=testPassword dbname=testdb port=5432 sslmode=disable TimeZone=UTC",
+			output: "host=localhost user=testUsername password=testPassword dbname=testdb " +
+				"port=5432 sslmode=disable TimeZone=UTC",
 		},
 		{
 			name:   "empty DSN",
@@ -104,7 +105,8 @@ func TestLoadConfig(t *testing.T) {
 	tmpDir := t.TempDir()
 	os.Setenv(fmt.Sprintf("%s_PORT", ProjectName), "9090")
 	os.Setenv(fmt.Sprintf("%s_LOG_LEVEL", ProjectName), "info")
-	os.Setenv(fmt.Sprintf("%s_DATABASE_DSN", ProjectName), "host=localhost port=5432 user=test dbname=testdb sslmode=disable")
+	os.Setenv(fmt.Sprintf("%s_DATABASE_DSN", ProjectName),
+		"host=localhost port=5432 user=test dbname=testdb sslmode=disable")
 	os.Setenv(fmt.Sprintf("%s_RELEASE_MODE", ProjectName), "true")
 	os.Setenv(fmt.Sprintf("%s_PROJECT_DIR", ProjectName), tmpDir)
 
