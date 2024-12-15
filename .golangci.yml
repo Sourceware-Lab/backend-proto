@@ -94,11 +94,11 @@ linters:
     - sqlclosecheck
     - stylecheck
     - tagalign
-#    - tagliatelle
-#    - tenv
-#    - testableexamples
-#    - testifylint
-#    - testpackage
+    - tagliatelle
+    - tenv
+    - testableexamples
+    - testifylint
+    - testpackage
 #    - thelper
 #    - tparallel
 #    - unconvert

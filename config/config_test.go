@@ -1,8 +1,9 @@
-package config
+package config_test
 
 import (
-	"os"
 	"testing"
+
+	"github.com/Sourceware-Lab/backend-proto/config"
 )
 
 func TestDbDSN_ParseDSN(t *testing.T) {
@@ -11,12 +12,12 @@ func TestDbDSN_ParseDSN(t *testing.T) {
 	tests := []struct {
 		name   string
 		input  string
-		output DBDSN
+		output config.DBDSN
 	}{
 		{
 			name:  "valid DSN",
 			input: "host=localhost port=5432 user=testUsername password=testPassword dbname=testdb sslmode=disable TimeZone=UTC",
-			output: DBDSN{
+			output: config.DBDSN{
 				Host:     "localhost",
 				Port:     5432,
 				User:     "testUsername",
@@ -29,7 +30,7 @@ func TestDbDSN_ParseDSN(t *testing.T) {
 		{
 			name:  "missing optional fields in DSN",
 			input: "host=127.0.0.1 port=3306 user=root dbname=appdb sslmode=required",
-			output: DBDSN{
+			output: config.DBDSN{
 				Host:     "127.0.0.1",
 				Port:     3306,
 				User:     "root",
@@ -42,7 +43,7 @@ func TestDbDSN_ParseDSN(t *testing.T) {
 		{
 			name:  "empty DSN",
 			input: "",
-			output: DBDSN{
+			output: config.DBDSN{
 				Host:     "",
 				Port:     0,
 				User:     "",
@@ -57,7 +58,7 @@ func TestDbDSN_ParseDSN(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			var d DBDSN
+			var d config.DBDSN
 			result := d.ParseDSN(tt.input)
 			if result != tt.output {
 				t.Errorf("ParseDSN(%q) = %v, want %v", tt.input, result, tt.output)
@@ -71,12 +72,12 @@ func TestDbDSN_String(t *testing.T) {
 
 	tests := []struct {
 		name   string
-		input  DBDSN
+		input  config.DBDSN
 		output string
 	}{
 		{
 			name: "basic DSN",
-			input: DBDSN{
+			input: config.DBDSN{
 				Host:     "localhost",
 				Port:     5432,
 				User:     "testUsername",
@@ -90,7 +91,7 @@ func TestDbDSN_String(t *testing.T) {
 		},
 		{
 			name:   "empty DSN",
-			input:  DBDSN{},
+			input:  config.DBDSN{},
 			output: "host= user= password= dbname= port=0 sslmode= TimeZone=",
 		},
 	}
@@ -107,29 +108,28 @@ func TestDbDSN_String(t *testing.T) {
 }
 
 func TestLoadConfig(t *testing.T) {
-	t.Parallel()
 	tmpDir := t.TempDir()
-	os.Setenv(ProjectName+"_PORT", "9090")
-	os.Setenv(ProjectName+"_LOG_LEVEL", "info")
-	os.Setenv(ProjectName+"_DATABASE_DSN", "host=localhost port=5432 user=test dbname=testdb sslmode=disable")
-	os.Setenv(ProjectName+"_RELEASE_MODE", "true")
-	os.Setenv(ProjectName+"_PROJECT_DIR", tmpDir)
+	t.Setenv(config.ProjectName+"_PORT", "9090")
+	t.Setenv(config.ProjectName+"_LOG_LEVEL", "info")
+	t.Setenv(config.ProjectName+"_DATABASE_DSN", "host=localhost port=5432 user=test dbname=testdb sslmode=disable")
+	t.Setenv(config.ProjectName+"_RELEASE_MODE", "true")
+	t.Setenv(config.ProjectName+"_PROJECT_DIR", tmpDir)
 
-	LoadConfig()
+	config.LoadConfig()
 
-	if Config.Port != 9090 {
-		t.Errorf("expected Port=9090, got %d", Config.Port)
+	if config.Config.Port != 9090 {
+		t.Errorf("expected Port=9090, got %d", config.Config.Port)
 	}
-	if Config.LogLevel != "info" {
-		t.Errorf("expected LogLevel=info, got %s", Config.LogLevel)
+	if config.Config.LogLevel != "info" {
+		t.Errorf("expected LogLevel=info, got %s", config.Config.LogLevel)
 	}
-	if Config.DatabaseDSN != "host=localhost port=5432 user=test dbname=testdb sslmode=disable" {
-		t.Errorf("expected DatabaseDSN not matching, got %s", Config.DatabaseDSN)
+	if config.Config.DatabaseDSN != "host=localhost port=5432 user=test dbname=testdb sslmode=disable" {
+		t.Errorf("expected DatabaseDSN not matching, got %s", config.Config.DatabaseDSN)
 	}
-	if Config.ReleaseMode != true {
-		t.Errorf("expected ReleaseMode=true, got %v", Config.ReleaseMode)
+	if config.Config.ReleaseMode != true {
+		t.Errorf("expected ReleaseMode=true, got %v", config.Config.ReleaseMode)
 	}
-	if Config.ProjectDir != tmpDir {
-		t.Errorf("expected ProjectDir=%s, got %s", tmpDir, Config.ProjectDir)
+	if config.Config.ProjectDir != tmpDir {
+		t.Errorf("expected ProjectDir=%s, got %s", tmpDir, config.Config.ProjectDir)
 	}
 }

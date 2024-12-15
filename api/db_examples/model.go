@@ -36,9 +36,9 @@ type PostBodyInputDBExampleBody struct {
 	Age  uint8  `doc:"Age for new user"  example:"25" json:"age"  path:"age"`
 
 	// Optional
-	Email        string  `doc:"Email for new user"         example:"jo@example.com" json:"email"         maxLength:"100"      path:"email"     required:"false"` //nolint:lll
-	Birthday     *string `doc:"Birthday for new user"      example:"2006-01-02"     format:"date"        json:"birthday"      path:"birthday"  required:"false"` //nolint:lll
-	MemberNumber *string `doc:"Member number for new user" example:"123456"         json:"member_number" path:"member_number" required:"false"`                  //nolint:lll
+	Email        string  `doc:"Email for new user"         example:"jo@example.com" json:"email"        maxLength:"100"     path:"email"     required:"false"` //nolint:lll
+	Birthday     *string `doc:"Birthday for new user"      example:"2006-01-02"     format:"date"       json:"birthday"     path:"birthday"  required:"false"` //nolint:lll
+	MemberNumber *string `doc:"Member number for new user" example:"123456"         json:"memberNumber" path:"memberNumber" required:"false"`                  //nolint:lll
 }
 
 type PostOutputDBExample struct {

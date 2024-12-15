@@ -1,4 +1,4 @@
-package api
+package api_test
 
 import (
 	"encoding/json"
@@ -12,6 +12,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/uuid"
 
+	"github.com/Sourceware-Lab/backend-proto/api"
 	dbexample "github.com/Sourceware-Lab/backend-proto/api/db_examples"
 	"github.com/Sourceware-Lab/backend-proto/config"
 	DBpostgres "github.com/Sourceware-Lab/backend-proto/database/postgres"
@@ -81,8 +82,8 @@ func TestRoutes(t *testing.T) {
 		func() {
 			dbName := setup()
 			defer teardown(dbName)
-			_, api := humatest.New(t)
-			AddRoutes(api)
+			_, apiInstance := humatest.New(t)
+			api.AddRoutes(apiInstance)
 			birthdayTime := time.Now().Add(time.Duration(-tt.want.Body.Age) * time.Hour * 24 * 365)
 			birthday := birthdayTime.Format(time.DateOnly)
 			tt.want.Body.Birthday = &birthday
@@ -90,7 +91,7 @@ func TestRoutes(t *testing.T) {
 			memberNumber := strconv.Itoa(rand.Intn(1000000)) //nolint:gosec
 			tt.want.Body.MemberNumber = &memberNumber
 
-			resp := api.Post(tt.basePath, tt.want.Body)
+			resp := apiInstance.Post(tt.basePath, tt.want.Body)
 
 			postRespBody := dbexample.PostOutputDBExample{}.Body
 			err := json.Unmarshal(resp.Body.Bytes(), &postRespBody)
@@ -104,7 +105,7 @@ func TestRoutes(t *testing.T) {
 				t.Fatalf("Unexpected response: %s", resp.Body.String())
 			}
 
-			getResp := api.Get(tt.basePath + "/1")
+			getResp := apiInstance.Get(tt.basePath + "/1")
 			getRespBody := dbexample.GetOutputDBExample{}
 			err = json.Unmarshal(getResp.Body.Bytes(), &getRespBody)
 			if err != nil {
