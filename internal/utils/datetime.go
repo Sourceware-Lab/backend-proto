@@ -2,7 +2,7 @@ package utils
 
 import "time"
 
-var DatetimeFormats = []string{
+var DatetimeFormats = []string{ //nolint:gochecknoglobals
 	time.Layout,
 	time.ANSIC,
 	time.UnixDate,
@@ -27,8 +27,8 @@ var DatetimeFormats = []string{
 func ParseAnyDatetime(s string) (parsedTime time.Time, err error) {
 	for _, layout := range DatetimeFormats {
 		if parsedTime, err = time.Parse(layout, s); err == nil {
-			return
+			return parsedTime, nil
 		}
 	}
-	return parsedTime, err
+	return parsedTime, nil
 }

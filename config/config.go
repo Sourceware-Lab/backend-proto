@@ -3,7 +3,6 @@ package config
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -63,16 +62,10 @@ func (d *DbDSN) ParseDSN(dsn string) DbDSN {
 }
 
 func (d *DbDSN) String() string {
-	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s", d.Host, d.User, d.Password, d.DbName, d.Port, d.SSLMode, d.TimeZone)
-}
-
-func getRootDir() string {
-	exPath, err := filepath.Abs(".")
-	if err != nil {
-		log.Fatal().Err(err).Msg("Error getting root dir")
-	}
-	log.Info().Msg(fmt.Sprintf("ROOT_DIR: %s", exPath))
-	return exPath
+	return fmt.Sprintf(
+		"host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s",
+		d.Host, d.User, d.Password, d.DbName, d.Port, d.SSLMode, d.TimeZone,
+	)
 }
 
 func InitLogger() {

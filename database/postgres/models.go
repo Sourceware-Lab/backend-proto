@@ -23,5 +23,6 @@ type User struct {
 	ActivatedAt  sql.NullTime   // Uses sql.NullTime for nullable time fields
 
 	// Example
+	//nolint:unused
 	ignored string // fields that aren't exported are ignored
 }

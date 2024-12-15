@@ -48,7 +48,7 @@ func Open(dsn string) {
 			break
 		}
 		log.Info().Err(err).Msg("Error connecting to database, retrying in 3 seconds")
-		retry += 1
+		retry++
 		time.Sleep(3 * time.Second)
 	}
 	if err != nil {
@@ -58,7 +58,7 @@ func Open(dsn string) {
 		log.Fatal().Msg("Error connecting to database")
 	}
 
-	if config.Config.ReleaseMode == true {
+	if config.Config.ReleaseMode {
 		DB = db
 	} else {
 		DB = db.Debug()

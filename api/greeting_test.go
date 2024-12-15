@@ -104,7 +104,7 @@ func FuzzPostGreeting(f *testing.F) {
 			if err != nil {
 				t.Fatalf("Failed to unmarshal fuzzy input: %s", err.Error())
 			}
-			err = json.Unmarshal([]byte(resp.Body.String()), &jsonData.Body)
+			err = json.Unmarshal(resp.Body.Bytes(), &jsonData.Body)
 			if err != nil {
 				t.Fatalf("Failed to unmarshal response body: %s", err.Error())
 			}
