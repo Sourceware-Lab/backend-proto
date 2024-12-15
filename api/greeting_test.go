@@ -1,4 +1,4 @@
-package api
+package api_test
 
 import (
 	"encoding/json"
@@ -8,17 +8,18 @@ import (
 
 	"github.com/danielgtaylor/huma/v2/humatest"
 
+	"github.com/Sourceware-Lab/backend-proto/api"
 	"github.com/Sourceware-Lab/backend-proto/api/greeting"
 )
 
 // Happy path test.
 func TestGetGreeting(t *testing.T) {
 	t.Parallel()
-	_, api := humatest.New(t)
+	_, apiInstance := humatest.New(t)
 
-	AddRoutes(api)
+	api.AddRoutes(apiInstance)
 
-	resp := api.Get("/greeting/world")
+	resp := apiInstance.Get("/greeting/world")
 	if !strings.Contains(resp.Body.String(), "Hello get, world!") {
 		t.Fatalf("Unexpected response: %s", resp.Body.String())
 	}
@@ -26,11 +27,11 @@ func TestGetGreeting(t *testing.T) {
 
 func TestGetGreetingMissingPath(t *testing.T) {
 	t.Parallel()
-	_, api := humatest.New(t)
+	_, apiInstance := humatest.New(t)
 
-	AddRoutes(api)
+	api.AddRoutes(apiInstance)
 
-	resp := api.Get("/greeting/")
+	resp := apiInstance.Get("/greeting/")
 	if resp.Code != 404 {
 		t.Fatalf("Page found when it should not have: %s", resp.Body.String())
 	}
@@ -39,11 +40,11 @@ func TestGetGreetingMissingPath(t *testing.T) {
 // Happy path test.
 func TestPostGreeting(t *testing.T) {
 	t.Parallel()
-	_, api := humatest.New(t)
+	_, apiInstance := humatest.New(t)
 
-	AddRoutes(api)
+	api.AddRoutes(apiInstance)
 
-	resp := api.Post("/greeting",
+	resp := apiInstance.Post("/greeting",
 		map[string]any{
 			"name": "test",
 		},
@@ -56,11 +57,11 @@ func TestPostGreeting(t *testing.T) {
 func TestPostMissingBody(t *testing.T) {
 	t.Parallel()
 
-	_, api := humatest.New(t)
+	_, apiInstance := humatest.New(t)
 
-	AddRoutes(api)
+	api.AddRoutes(apiInstance)
 
-	resp := api.Post("/greeting",
+	resp := apiInstance.Post("/greeting",
 		map[string]any{
 			"FAKE": "test",
 		},
@@ -84,8 +85,8 @@ func FuzzPostGreeting(f *testing.F) {
 				name = name[:29]
 			}
 
-			_, api := humatest.New(t)
-			AddRoutes(api)
+			_, apiInstance := humatest.New(t)
+			api.AddRoutes(apiInstance)
 
 			// Go does some fun stuff with unicode in json marshal/unmarshal. It is easier to marshal and unmarshal the
 			// input data than handle the unicode correctly.
@@ -99,7 +100,7 @@ func FuzzPostGreeting(f *testing.F) {
 			}
 
 			// api.Post() only accepts a io.Reader interface or map, not the raw string
-			resp := api.Post("/greeting", strings.NewReader(string(marshaledFuzzyInput)))
+			resp := apiInstance.Post("/greeting", strings.NewReader(string(marshaledFuzzyInput)))
 
 			// json unmarshal needs a map/struct to put the data, it does not return a new object.
 			var unmarshalledFuzzingInput greeting.PostInputGreeting
