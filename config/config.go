@@ -109,7 +109,7 @@ func LoadConfig() {
 	}
 
 	viper.SetDefault(EnvVarLogLevel, "debug")
-	viper.SetDefault(EnvVarPort, "18877")
+	viper.SetDefault(EnvVarPort, "8080")
 	viper.SetDefault(EnvVarProjectDir, homeDir)
 	viper.SetDefault(EnvVarReleaseMode, "false")
 	viper.SetDefault(EnvVarDatabaseDSN,

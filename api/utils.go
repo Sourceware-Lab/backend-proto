@@ -5,9 +5,9 @@ import (
 
 	"github.com/danielgtaylor/huma/v2"
 
-	dbexample "github.com/Sourceware-Lab/backend-proto/api/db_examples"
-	"github.com/Sourceware-Lab/backend-proto/api/greeting"
-	"github.com/Sourceware-Lab/backend-proto/api/healthcheck"
+	dbexample "github.com/Sourceware-Lab/go-huma-gin-postgres-template/api/db_examples"
+	"github.com/Sourceware-Lab/go-huma-gin-postgres-template/api/greeting"
+	"github.com/Sourceware-Lab/go-huma-gin-postgres-template/api/healthcheck"
 )
 
 // AddRoutes This is to make testing easier. We can pass a testing API interface.

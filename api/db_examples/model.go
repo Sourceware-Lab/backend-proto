@@ -3,7 +3,7 @@ package dbexample
 import (
 	"time"
 
-	"github.com/Sourceware-Lab/backend-proto/internal/utils"
+	"github.com/Sourceware-Lab/go-huma-gin-postgres-template/internal/utils"
 )
 
 type GetInputDBExample struct {
