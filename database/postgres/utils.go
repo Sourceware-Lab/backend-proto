@@ -13,6 +13,7 @@ import (
 
 var DB *gorm.DB //nolint:gochecknoglobals
 
+//nolint:funlen
 func Open(dsn string) {
 	log.Info().Msg("Opening database")
 
@@ -49,6 +50,7 @@ func Open(dsn string) {
 	retries := 3
 
 	retry := 0
+
 	log.Info().Msg("Connecting to database")
 
 	for retry < retries {
