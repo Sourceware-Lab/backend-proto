@@ -14,6 +14,8 @@ import (
 var DB *gorm.DB //nolint:gochecknoglobals
 
 func Open(dsn string) {
+	log.Info().Msg("Opening database")
+
 	if DB != nil {
 		openDB, err := DB.DB()
 		if err != nil {
@@ -47,6 +49,7 @@ func Open(dsn string) {
 	retries := 3
 
 	retry := 0
+	log.Info().Msg("Connecting to database")
 
 	for retry < retries {
 		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{Logger: newLogger})
@@ -74,6 +77,8 @@ func Open(dsn string) {
 	} else {
 		DB = db.Debug()
 	}
+
+	log.Info().Msg("Connected to database")
 }
 
 func Close() {
@@ -105,8 +110,12 @@ func DeleteDB(dbName string) {
 }
 
 func RunMigrations() {
+	log.Info().Msg("Running migrations")
+
 	err := DB.AutoMigrate(&User{})
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error migrating database")
 	}
+
+	log.Info().Msg("Migrations ran successfully")
 }

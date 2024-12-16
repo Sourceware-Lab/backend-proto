@@ -6,7 +6,7 @@ services:
       target: local
     command: [ "air", "-c", ".air.toml" ]
     ports:
-      - "18877:18877"
+      - "8080:8080"
     volumes:
       - .:/app
     env_file:

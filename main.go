@@ -114,6 +114,8 @@ func initProvider() func() { //nolint:funlen
 
 //nolint:ireturn
 func getCli() humacli.CLI {
+	log.Info().Msg("Creating CLI")
+
 	cli := humacli.New(func(hooks humacli.Hooks, options *Options) {
 		log.Info().Msg("Starting server")
 		options.loadFromViper()
