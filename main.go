@@ -13,14 +13,15 @@ import (
 	"github.com/rs/zerolog/log"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
 
 	_ "github.com/danielgtaylor/huma/v2/formats/cbor"
+
 	ginLogger "github.com/gin-contrib/logger"
-	"go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc"
-	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
-	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	sdkmetric "go.opentelemetry.io/otel/sdk/metric"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
@@ -40,7 +41,7 @@ func (o *Options) loadFromViper() {
 	o.Port = config.Config.Port
 }
 
-func initProvider() func() {
+func initProvider() func() { //nolint:funlen
 	ctx := context.Background()
 
 	res, err := resource.New(ctx,
@@ -70,7 +71,7 @@ func initProvider() func() {
 		sdkmetric.WithReader(
 			sdkmetric.NewPeriodicReader(
 				metricExp,
-				sdkmetric.WithInterval(2*time.Second),
+				sdkmetric.WithInterval(2*time.Second), //nolint:mnd
 			),
 		),
 	)
@@ -78,7 +79,8 @@ func initProvider() func() {
 
 	traceClient := otlptracegrpc.NewClient(
 		otlptracegrpc.WithInsecure(),
-		otlptracegrpc.WithEndpoint(config.Config.OTELExporterOTLPEndpoint))
+		otlptracegrpc.WithEndpoint(config.Config.OTELExporterOTLPEndpoint),
+	)
 
 	traceExp, err := otlptrace.New(ctx, traceClient)
 	if err != nil {

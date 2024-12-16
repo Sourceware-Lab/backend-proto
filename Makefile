@@ -24,7 +24,7 @@ lint:
 	go fmt
 	golangci-lint run --fix ./...
 
-clean: _down kill_all_containers
+clean: down kill_all_containers
 	docker system prune -a -f
 	docker volume prune -a -f
 	docker network prune -f

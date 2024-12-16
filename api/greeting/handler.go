@@ -17,7 +17,7 @@ func Get(c context.Context, input *InputGreeting) (*OutputGreeting, error) {
 
 	defer span.End()
 
-	resp.Body.Message = fmt.Sprintf("Hello get,sasaa %s!", input.Name)
+	resp.Body.Message = fmt.Sprintf("Hello get, %s!", input.Name)
 
 	return resp, nil
 }
