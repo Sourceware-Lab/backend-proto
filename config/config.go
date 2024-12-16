@@ -10,26 +10,32 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
+	"go.opentelemetry.io/otel"
 )
 
 const (
-	EnvVarLogLevel    = "LOG_LEVEL"
-	EnvVarPort        = "PORT"
-	EnvVarProjectDir  = "PROJECT_DIR"
-	EnvVarReleaseMode = "RELEASE_MODE"
-	EnvVarDatabaseDSN = "DATABASE_DSN"
+	EnvVarLogLevel                 = "LOG_LEVEL"
+	EnvVarPort                     = "PORT"
+	EnvVarProjectDir               = "PROJECT_DIR"
+	EnvVarReleaseMode              = "RELEASE_MODE"
+	EnvVarDatabaseDSN              = "DATABASE_DSN"
+	EnvVarOTELExporterOTLPEndpoint = "OTEL_EXPORTER_OTLP_ENDPOINT"
 )
 
 const ProjectName = "REPLACEME"
 
-var Config config //nolint:gochecknoglobals
+var (
+	Config config //nolint:gochecknoglobals
+	Tracer = otel.Tracer("REPLACEME")
+)
 
 type config struct {
-	LogLevel    string `mapstructure:"LOG_LEVEL"`
-	Port        int    `mapstructure:"PORT"`
-	ProjectDir  string `mapstructure:"PROJECT_DIR"`
-	ReleaseMode bool   `mapstructure:"RELEASE_MODE"`
-	DatabaseDSN string `mapstructure:"DATABASE_DSN"`
+	LogLevel                 string `mapstructure:"LOG_LEVEL"`
+	Port                     int    `mapstructure:"PORT"`
+	ProjectDir               string `mapstructure:"PROJECT_DIR"`
+	ReleaseMode              bool   `mapstructure:"RELEASE_MODE"`
+	DatabaseDSN              string `mapstructure:"DATABASE_DSN"`
+	OTELExporterOTLPEndpoint string `mapstructure:"OTEL_EXPORTER_OTLP_ENDPOINT"`
 }
 type DBDSN struct {
 	Host     string
@@ -103,12 +109,13 @@ func LoadConfig() {
 	}
 
 	viper.SetDefault(EnvVarLogLevel, "debug")
-	viper.SetDefault(EnvVarPort, "8888")
+	viper.SetDefault(EnvVarPort, "18877")
 	viper.SetDefault(EnvVarProjectDir, homeDir)
 	viper.SetDefault(EnvVarReleaseMode, "false")
 	viper.SetDefault(EnvVarDatabaseDSN,
 		"host=localhost user=postgres password=local_fake dbname=postgres port=5432 sslmode=disable TimeZone=GMT",
 	)
+	viper.SetDefault(EnvVarOTELExporterOTLPEndpoint, "0.0.0.0:4317")
 
 	viper.SetConfigName(".env")
 	viper.SetConfigType("env")

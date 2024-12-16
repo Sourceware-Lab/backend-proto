@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -10,10 +11,20 @@ import (
 	"github.com/danielgtaylor/huma/v2/humacli"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
+	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/sdk/resource"
 
 	_ "github.com/danielgtaylor/huma/v2/formats/cbor"
 
 	ginLogger "github.com/gin-contrib/logger"
+	sdkmetric "go.opentelemetry.io/otel/sdk/metric"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 
 	beApi "github.com/Sourceware-Lab/backend-proto/api"
 	"github.com/Sourceware-Lab/backend-proto/config"
@@ -28,6 +39,77 @@ type Options struct {
 
 func (o *Options) loadFromViper() {
 	o.Port = config.Config.Port
+}
+
+func initProvider() func() { //nolint:funlen
+	ctx := context.Background()
+
+	res, err := resource.New(ctx,
+		resource.WithFromEnv(),
+		resource.WithProcess(),
+		resource.WithTelemetrySDK(),
+		resource.WithHost(),
+		resource.WithAttributes(
+			// the service name used to display traces in backends
+			semconv.ServiceNameKey.String("REPLACEME2"),
+		),
+	)
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to create resource")
+	}
+
+	metricExp, err := otlpmetricgrpc.New(
+		ctx,
+		otlpmetricgrpc.WithInsecure(),
+		otlpmetricgrpc.WithEndpoint(config.Config.OTELExporterOTLPEndpoint))
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to create the collector metric exporter")
+	}
+
+	meterProvider := sdkmetric.NewMeterProvider(
+		sdkmetric.WithResource(res),
+		sdkmetric.WithReader(
+			sdkmetric.NewPeriodicReader(
+				metricExp,
+				sdkmetric.WithInterval(2*time.Second), //nolint:mnd
+			),
+		),
+	)
+	otel.SetMeterProvider(meterProvider)
+
+	traceClient := otlptracegrpc.NewClient(
+		otlptracegrpc.WithInsecure(),
+		otlptracegrpc.WithEndpoint(config.Config.OTELExporterOTLPEndpoint),
+	)
+
+	traceExp, err := otlptrace.New(ctx, traceClient)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to create the collector trace exporter")
+	}
+
+	bsp := sdktrace.NewBatchSpanProcessor(traceExp)
+	tracerProvider := sdktrace.NewTracerProvider(
+		sdktrace.WithSampler(sdktrace.AlwaysSample()),
+		sdktrace.WithResource(res),
+		sdktrace.WithSpanProcessor(bsp),
+	)
+
+	// set global propagator to tracecontext (the default is no-op).
+	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))
+	otel.SetTracerProvider(tracerProvider)
+
+	return func() {
+		cxt, cancel := context.WithTimeout(ctx, time.Second)
+		defer cancel()
+
+		if err := traceExp.Shutdown(cxt); err != nil {
+			otel.Handle(err)
+		}
+		// pushes any last exports to the receiver
+		if err := meterProvider.Shutdown(cxt); err != nil {
+			otel.Handle(err)
+		}
+	}
 }
 
 //nolint:ireturn
@@ -48,6 +130,7 @@ func getCli() humacli.CLI {
 
 		// Create a new router & API
 		router := gin.New()
+		router.Use(otelgin.Middleware("REPLACEME2"))
 		router.Use(ginLogger.SetLogger())
 		api := humagin.New(router, huma.DefaultConfig("Example API", apiVersion))
 
@@ -74,6 +157,10 @@ func getCli() humacli.CLI {
 func main() {
 	config.LoadConfig()
 	config.InitLogger()
+
+	shutdown := initProvider()
+	defer shutdown()
+
 	DBpostgres.Open(config.Config.DatabaseDSN)
 
 	defer DBpostgres.Close()

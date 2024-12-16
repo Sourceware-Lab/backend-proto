@@ -21,3 +21,11 @@ Run `go get -u ./...`
 
 # Additional Reading
 Checkout the [docs](docs/index.md) dir. It contains files with additional information.
+
+
+# OTEL
+https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/examples/demo/docker-compose.yaml
+https://github.com/open-telemetry/opentelemetry-go-contrib/blob/main/instrumentation/github.com/gin-gonic/gin/otelgin/example/server.go
+* Jaeger at http://0.0.0.0:16686
+* Zipkin at http://0.0.0.0:9411
+* Prometheus at http://0.0.0.0:9090
