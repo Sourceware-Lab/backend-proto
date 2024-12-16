@@ -8,7 +8,7 @@ import (
 
 	oteltrace "go.opentelemetry.io/otel/trace"
 
-	"github.com/Sourceware-Lab/backend-proto/config"
+	"github.com/Sourceware-Lab/go-huma-gin-postgres-template/config"
 )
 
 func Get(c context.Context, input *InputGreeting) (*OutputGreeting, error) {

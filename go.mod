@@ -1,4 +1,4 @@
-module github.com/Sourceware-Lab/backend-proto
+module github.com/Sourceware-Lab/go-huma-gin-postgres-template
 
 go 1.23.4
 

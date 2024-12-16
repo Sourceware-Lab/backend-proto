@@ -12,10 +12,10 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/uuid"
 
-	"github.com/Sourceware-Lab/backend-proto/api"
-	dbexample "github.com/Sourceware-Lab/backend-proto/api/db_examples"
-	"github.com/Sourceware-Lab/backend-proto/config"
-	DBpostgres "github.com/Sourceware-Lab/backend-proto/database/postgres"
+	"github.com/Sourceware-Lab/go-huma-gin-postgres-template/api"
+	dbexample "github.com/Sourceware-Lab/go-huma-gin-postgres-template/api/db_examples"
+	"github.com/Sourceware-Lab/go-huma-gin-postgres-template/config"
+	DBpostgres "github.com/Sourceware-Lab/go-huma-gin-postgres-template/database/postgres"
 )
 
 func setup() string {

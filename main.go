@@ -26,9 +26,9 @@ import (
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 
-	beApi "github.com/Sourceware-Lab/backend-proto/api"
-	"github.com/Sourceware-Lab/backend-proto/config"
-	DBpostgres "github.com/Sourceware-Lab/backend-proto/database/postgres"
+	beApi "github.com/Sourceware-Lab/go-huma-gin-postgres-template/api"
+	"github.com/Sourceware-Lab/go-huma-gin-postgres-template/config"
+	DBpostgres "github.com/Sourceware-Lab/go-huma-gin-postgres-template/database/postgres"
 )
 
 const apiVersion = "0.0.1"
