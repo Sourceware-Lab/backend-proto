@@ -22,7 +22,7 @@ services:
         condition: service_started
 #      jaeger-all-in-one:
 #        condition: service_started
-#      zipkin-all-in-one: 
+#      zipkin-all-in-one:
 #        condition: service_started
 #      prometheus:
 #        condition: service_started
@@ -86,6 +86,7 @@ services:
     depends_on:
       - jaeger-all-in-one
       - zipkin-all-in-one
+      - prometheus
 
 
 volumes:

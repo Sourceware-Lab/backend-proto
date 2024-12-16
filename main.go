@@ -14,11 +14,16 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/sdk/resource"
 
 	_ "github.com/danielgtaylor/huma/v2/formats/cbor"
 	ginLogger "github.com/gin-contrib/logger"
-	stdout "go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
+	"go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
+	sdkmetric "go.opentelemetry.io/otel/sdk/metric"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 
 	beApi "github.com/Sourceware-Lab/backend-proto/api"
 	"github.com/Sourceware-Lab/backend-proto/config"
@@ -35,18 +40,74 @@ func (o *Options) loadFromViper() {
 	o.Port = config.Config.Port
 }
 
-func initTracer() (*sdktrace.TracerProvider, error) {
-	exporter, err := stdout.New(stdout.WithPrettyPrint())
-	if err != nil {
-		return nil, err
-	}
-	tp := sdktrace.NewTracerProvider(
-		sdktrace.WithSampler(sdktrace.AlwaysSample()),
-		sdktrace.WithBatcher(exporter),
+func initProvider() func() {
+	ctx := context.Background()
+
+	res, err := resource.New(ctx,
+		resource.WithFromEnv(),
+		resource.WithProcess(),
+		resource.WithTelemetrySDK(),
+		resource.WithHost(),
+		resource.WithAttributes(
+			// the service name used to display traces in backends
+			semconv.ServiceNameKey.String("REPLACEME2"),
+		),
 	)
-	otel.SetTracerProvider(tp)
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to create resource")
+	}
+
+	metricExp, err := otlpmetricgrpc.New(
+		ctx,
+		otlpmetricgrpc.WithInsecure(),
+		otlpmetricgrpc.WithEndpoint(config.Config.OTELExporterOTLPEndpoint))
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to create the collector metric exporter")
+	}
+
+	meterProvider := sdkmetric.NewMeterProvider(
+		sdkmetric.WithResource(res),
+		sdkmetric.WithReader(
+			sdkmetric.NewPeriodicReader(
+				metricExp,
+				sdkmetric.WithInterval(2*time.Second),
+			),
+		),
+	)
+	otel.SetMeterProvider(meterProvider)
+
+	traceClient := otlptracegrpc.NewClient(
+		otlptracegrpc.WithInsecure(),
+		otlptracegrpc.WithEndpoint(config.Config.OTELExporterOTLPEndpoint))
+
+	traceExp, err := otlptrace.New(ctx, traceClient)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to create the collector trace exporter")
+	}
+
+	bsp := sdktrace.NewBatchSpanProcessor(traceExp)
+	tracerProvider := sdktrace.NewTracerProvider(
+		sdktrace.WithSampler(sdktrace.AlwaysSample()),
+		sdktrace.WithResource(res),
+		sdktrace.WithSpanProcessor(bsp),
+	)
+
+	// set global propagator to tracecontext (the default is no-op).
 	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))
-	return tp, nil
+	otel.SetTracerProvider(tracerProvider)
+
+	return func() {
+		cxt, cancel := context.WithTimeout(ctx, time.Second)
+		defer cancel()
+
+		if err := traceExp.Shutdown(cxt); err != nil {
+			otel.Handle(err)
+		}
+		// pushes any last exports to the receiver
+		if err := meterProvider.Shutdown(cxt); err != nil {
+			otel.Handle(err)
+		}
+	}
 }
 
 //nolint:ireturn
@@ -94,15 +155,10 @@ func getCli() humacli.CLI {
 func main() {
 	config.LoadConfig()
 	config.InitLogger()
-	tp, err := initTracer()
-	if err != nil {
-		log.Fatal().Err(err).Msg("Error initializing tracer")
-	}
-	defer func() {
-		if err := tp.Shutdown(context.Background()); err != nil {
-			log.Printf("Error shutting down tracer provider: %v", err)
-		}
-	}()
+
+	shutdown := initProvider()
+	defer shutdown()
+
 	DBpostgres.Open(config.Config.DatabaseDSN)
 
 	defer DBpostgres.Close()
