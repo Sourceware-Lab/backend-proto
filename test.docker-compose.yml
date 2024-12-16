@@ -2,4 +2,3 @@ services:
   backend:
     command: [ "./test.sh" ]
     volumes: []
-

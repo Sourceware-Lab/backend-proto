@@ -121,8 +121,6 @@ func LoadConfig() {
 	viper.SetConfigType("env")
 	viper.AddConfigPath(".")
 
-	viper.SetEnvPrefix(ProjectName)
-
 	err = viper.ReadInConfig() // Find and read the config file
 
 	if err != nil { // Handle errors reading the config file

@@ -112,11 +112,11 @@ func TestDbDSN_String(t *testing.T) {
 
 func TestLoadConfig(t *testing.T) {
 	tmpDir := t.TempDir()
-	t.Setenv(config.ProjectName+"_PORT", "9090")
-	t.Setenv(config.ProjectName+"_LOG_LEVEL", "info")
-	t.Setenv(config.ProjectName+"_DATABASE_DSN", "host=localhost port=5432 user=test dbname=testdb sslmode=disable")
-	t.Setenv(config.ProjectName+"_RELEASE_MODE", "true")
-	t.Setenv(config.ProjectName+"_PROJECT_DIR", tmpDir)
+	t.Setenv("PORT", "9090")
+	t.Setenv("LOG_LEVEL", "info")
+	t.Setenv("DATABASE_DSN", "host=localhost port=5432 user=test dbname=testdb sslmode=disable")
+	t.Setenv("RELEASE_MODE", "true")
+	t.Setenv("PROJECT_DIR", tmpDir)
 
 	config.LoadConfig()
 
