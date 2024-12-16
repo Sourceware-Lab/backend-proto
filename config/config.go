@@ -19,7 +19,7 @@ const (
 	EnvVarProjectDir               = "PROJECT_DIR"
 	EnvVarReleaseMode              = "RELEASE_MODE"
 	EnvVarDatabaseDSN              = "DATABASE_DSN"
-	EnvVarOTELExporterOTLPEndpoint = "OTEL_EXPORTER_OTLP_ENDPOINT"
+	EnvVarOTELExporterOTLPEndpoint = "REPLACEME_OTEL_EXPORTER_OTLP_ENDPOINT"
 )
 
 const ProjectName = "REPLACEME"
@@ -35,7 +35,7 @@ type config struct {
 	ProjectDir               string `mapstructure:"PROJECT_DIR"`
 	ReleaseMode              bool   `mapstructure:"RELEASE_MODE"`
 	DatabaseDSN              string `mapstructure:"DATABASE_DSN"`
-	OTELExporterOTLPEndpoint string `mapstructure:"OTEL_EXPORTER_OTLP_ENDPOINT"`
+	OTELExporterOTLPEndpoint string `mapstructure:"REPLACEME_OTEL_EXPORTER_OTLP_ENDPOINT"`
 }
 type DBDSN struct {
 	Host     string
@@ -120,8 +120,6 @@ func LoadConfig() {
 	viper.SetConfigName(".env")
 	viper.SetConfigType("env")
 	viper.AddConfigPath(".")
-
-	viper.SetEnvPrefix(ProjectName)
 
 	err = viper.ReadInConfig() // Find and read the config file
 
