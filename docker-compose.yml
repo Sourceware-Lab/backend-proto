@@ -13,7 +13,7 @@ services:
       - ./.env
     environment:
       - DATABASE_DSN=host=postgres user=postgres password=local_fake dbname=postgres port=5432 sslmode=disable TimeZone=GMT
-      - OTEL_EXPORTER_OTLP_ENDPOINT=otel-collector:4317
+      - REPLACEME_OTEL_EXPORTER_OTLP_ENDPOINT=otel-collector:4317
 
     depends_on:
       postgres:
